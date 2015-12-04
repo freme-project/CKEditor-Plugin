@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<!--
+Copyright (c) 2003-2015, CKSource - Frederico Knabben. All rights reserved.
+For licensing, see LICENSE.md or http://ckeditor.com/license
+-->
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>CKEditor FREME Sample</title>
+    <script src="../ckeditor.js"></script>
+    <link rel="stylesheet" href="css/samples.css">
+    <link rel="stylesheet" href="toolbarconfigurator/lib/codemirror/neo.css">
+</head>
+<body id="main">
+
+<main>
+    <div class="adjoined-top">
+        <div class="grid-container">
+            <div class="content grid-width-100">
+                <h1>Congratulations!</h1>
+
+                <p>
+                    If you can see CKEditor below, it means that the installation succeeded.
+                    You can now try out your new editor version, and see its FREME features!
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="adjoined-bottom">
+        <div class="grid-container">
+            <div class="grid-width-100">
+                <textarea id="editor1" cols="10" rows="10">
+                    &lt;p&gt;This is some sample text. You are using &lt;a href=&quot;http://ckeditor.com&quot;&gt;CKEditor&lt;/a&gt;.&lt;/p&gt;
+                </textarea>
+            </div>
+        </div>
+    </div>
+
+</main>
+<script>
+    CKEDITOR.replace('editor1', {
+        // Load the timestamp plugin.
+        extraPlugins: 'freme',
+        // Rearrange toolbar groups and remove unnecessary plugins.
+        toolbarGroups: [
+            {name: 'clipboard', groups: ['clipboard', 'undo']},
+            {name: 'links'},
+            {name: 'insert'},
+            {name: 'document', groups: ['mode']},
+            '/',
+            {name: 'basicstyles', groups: ['basicstyles', 'cleanup']},
+            {name: 'paragraph', groups: ['list', 'indent', 'blocks', 'align', 'bidi']},
+            {name: 'styles'},
+            {name: 'colors'},
+            {name: 'about'}
+        ],
+        // Remove some buttons provided by the standard plugins, which are
+        // not needed in the Standard(s) toolbar.
+        removeButtons: 'Underline,Subscript,Superscript',
+
+        // Set the most common block elements.
+        format_tags: 'p;h1;h2;h3;pre',
+
+        // Simplify the dialog windows.
+        removeDialogTabs: 'image:advanced;link:advanced'
+    });
+</script>
+
+</body>
+</html>

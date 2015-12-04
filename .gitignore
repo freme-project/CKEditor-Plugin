@@ -1,0 +1,13 @@
+.idea/
+
+ckeditor/*
+
+# Alleen freme plugin
+!ckeditor/plugins/
+ckeditor/plugins/*
+!ckeditor/plugins/freme/
+
+#Alleen freme sample
+!ckeditor/samples/
+ckeditor/samples/*
+!ckeditor/samples/freme.html
