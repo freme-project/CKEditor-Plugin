@@ -9,22 +9,32 @@ CKEDITOR.dialog.add('fremeTranslateDialog', function (editor) {
     };
 
     function translate(sourceText, sourceLang, targetLang, cb) {
-        var jqxhr = $.ajax({
-            method: 'POST',
-            headers: {'Content-Type': 'text/n3', Accept: 'text/n3'},
-            data: sourceText,
-            url: 'http://api-dev.freme-project.eu/current/e-translation/tilde?informat=text&outformat=json-ld&source-lang=' + sourceLang.toLowerCase() + '&target-lang=' + targetLang.toLowerCase()
-        }).done(function (data) {
-                var outString = data.target['@value'];
-                var result = '<p>' + outString + '</p>';
-                cb(null, result);
-            })
-            .fail(function () {
+        doRequest('POST',
+            'http://api-dev.freme-project.eu/current/e-translation/tilde?informat=text&outformat=json-ld&source-lang=' + sourceLang.toLowerCase() + '&target-lang=' + targetLang.toLowerCase(),
+            sourceText,
+            {'Content-Type': 'text/n3', Accept: 'text/n3'},
+            function (data) {
+                cb(null, data.target['@value']);
+            },
+            function () {
                 cb(new Error('Translation error'));
-            });
+            }
+        );
+
     }
 
-    //function doRequest(method, url, data, headers, success, error) {
+    function doRequest(method, url, data, headers, success, error) {
+        $.ajax({
+                method: method,
+                headers: headers,
+                data: data,
+                url: url
+            })
+            .done(success)
+            .fail(error);
+    }
+
+    //function doOldRequest(method, url, data, headers, success, error) {
     //    var httprequest;
     //    if (window.XMLHttpRequest) {
     //        httprequest = new XMLHttpRequest();
@@ -32,7 +42,7 @@ CKEDITOR.dialog.add('fremeTranslateDialog', function (editor) {
     //        // code for older browsers
     //        httprequest = new ActiveXObject("Microsoft.XMLHTTP");
     //    }
-    //    httprequest.onreadystatechange = function() {
+    //    httprequest.onreadystatechange = function () {
     //        if (httprequest.readyState == 4 && httprequest.status == 200) {
     //            success(httprequest, httprequest.responseText);
     //        }
@@ -42,10 +52,11 @@ CKEDITOR.dialog.add('fremeTranslateDialog', function (editor) {
     //    };
     //    httprequest.open(method, url, true);
     //    for (var key in headers) {
-    //        xhh
+    //        if (headers.hasOwnProperty(key)) {
+    //            httprequest.setRequestHeader(key, headers[key]);
+    //        }
     //    }
     //    httprequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    //    xhttp.send("fname=Henry&lname=Ford");
     //    httprequest.send(data);
     //}
 
@@ -85,16 +96,27 @@ CKEDITOR.dialog.add('fremeTranslateDialog', function (editor) {
         ],
         onOk: function () {
             var dialog = this;
-            translate($(editor.getData()).text(), dialog.getValueOf('tab-main', 'lang-in'), dialog.getValueOf('tab-main', 'lang-out'), function (err, html) {
-                if (err) {
-                    return console.log(err);
+            var doc = editor.document;
+            var goodTags = ['h1', 'h2', 'h3', 'blockquote', 'p'];
+            for (var i = 0; i < goodTags.length; i++) {
+                var currTag = goodTags[i];
+                var nodes = doc.getElementsByTag(currTag);
+                for (var j = 0; j < nodes.count(); j++) {
+                    var node = nodes.getItem(j);
+                    (function (node, currTag) {
+                        translate($(node.$).text(), dialog.getValueOf('tab-main', 'lang-in'), dialog.getValueOf('tab-main', 'lang-out'), function (err, text) {
+                            if (err) {
+                                return console.log(err);
+                            }
+                            var newNode = new CKEDITOR.dom.element(currTag);
+                            newNode.setText(text);
+                            newNode.setStyle('color', 'red');
+                            newNode.insertAfter(node);
+                        });
+                    })(node, currTag);
                 }
-                editor.setData(html, {
-                    callback: function () {
-                        console.log('Joepie!');
-                    }
-                });
-            });
+            }
+
         }
     };
 });
