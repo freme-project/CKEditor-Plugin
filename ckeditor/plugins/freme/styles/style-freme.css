@@ -1,3 +1,9 @@
 span[its-ta-ident-ref] {
     background-color: moccasin;
 }
+
+.freme-dl dt {
+    font-weight: bold;
+    font-style: italic;
+    font-size: smaller;
+}

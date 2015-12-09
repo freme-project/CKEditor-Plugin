@@ -10,7 +10,7 @@ CKEDITOR.plugins.add('freme', {
             label: 'Translate',
             command: 'fremeTranslate',
             icon: this.path + '/icons/fremeTranslate.png',
-            toolbar: 'insert'
+            toolbar: 'freme'
         });
 
         CKEDITOR.dialog.add('fremeTranslateDialog', this.path + 'dialogs/translate.js');
@@ -20,9 +20,30 @@ CKEDITOR.plugins.add('freme', {
             label: 'Link to entities',
             command: 'fremeEntity',
             icon: this.path + '/icons/fremeEntity.png',
-            toolbar: 'insert'
+            toolbar: 'freme'
         });
 
         CKEDITOR.dialog.add('fremeEntityDialog', this.path + 'dialogs/entity.js');
+
+        editor.addCommand('fremeLink', new CKEDITOR.dialogCommand('fremeLinkDialog'));
+        editor.ui.addButton('FremeLink', {
+            label: 'Get additional info',
+            command: 'fremeLink',
+            icon: this.path + '/icons/fremeLink.png',
+            toolbar: 'freme'
+        });
+
+        CKEDITOR.dialog.add('fremeLinkDialog', this.path + 'dialogs/link.js');
+
+        editor.commands.fremeLink.disable();
+
+        editor.on('selectionChange', function() {
+            if($(editor.document.getSelection().getStartElement().$).attr('its-ta-ident-ref')) {
+                editor.commands.fremeLink.enable();
+            }
+            else {
+                editor.commands.fremeLink.disable();
+            }
+        });
     }
 });
