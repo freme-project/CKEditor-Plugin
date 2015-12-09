@@ -10,7 +10,7 @@ CKEDITOR.dialog.add('fremeTranslateDialog', function (editor) {
 
     function translate(sourceText, sourceLang, targetLang, cb) {
         doRequest('POST',
-            'http://api-dev.freme-project.eu/current/e-translation/tilde?informat=text&outformat=json-ld&source-lang=' + sourceLang.toLowerCase() + '&target-lang=' + targetLang.toLowerCase(),
+            'http://api.freme-project.eu/current/e-translation/tilde?informat=text&outformat=json-ld&source-lang=' + sourceLang.toLowerCase() + '&target-lang=' + targetLang.toLowerCase(),
             sourceText,
             {'Content-Type': 'text/n3', Accept: 'text/n3'},
             function (data) {
@@ -95,16 +95,18 @@ CKEDITOR.dialog.add('fremeTranslateDialog', function (editor) {
             }
         ],
         onOk: function () {
-            var dialog = this;
-            var doc = editor.document;
-            var goodTags = ['h1', 'h2', 'h3', 'blockquote', 'p'];
+            var inLang = this.getValueOf('tab-main', 'lang-in'),
+                outLang = this.getValueOf('tab-main', 'lang-out'),
+                doc = editor.document,
+                goodTags = ['h1', 'h2', 'h3', 'blockquote', 'p'];
+            // TODO take into account the async stuff..
             for (var i = 0; i < goodTags.length; i++) {
                 var currTag = goodTags[i];
                 var nodes = doc.getElementsByTag(currTag);
                 for (var j = 0; j < nodes.count(); j++) {
                     var node = nodes.getItem(j);
-                    (function (node, currTag) {
-                        translate($(node.$).text(), dialog.getValueOf('tab-main', 'lang-in'), dialog.getValueOf('tab-main', 'lang-out'), function (err, text) {
+                    (function (node, currTag, inLang, outLang) {
+                        translate($(node.$).text(), inLang, outLang, function (err, text) {
                             if (err) {
                                 return console.log(err);
                             }
@@ -113,7 +115,7 @@ CKEDITOR.dialog.add('fremeTranslateDialog', function (editor) {
                             newNode.setStyle('color', 'red');
                             newNode.insertAfter(node);
                         });
-                    })(node, currTag);
+                    })(node, currTag, inLang, outLang);
                 }
             }
 
