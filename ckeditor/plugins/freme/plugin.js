@@ -4,13 +4,13 @@
 CKEDITOR.plugins.add( 'freme', {
     icons: 'freme',
     init: function( editor ) {
-        editor.addCommand( 'freme', new CKEDITOR.dialogCommand( 'fremeDialog' ) );
+        editor.addCommand( 'fremeTranslate', new CKEDITOR.dialogCommand( 'fremeTranslateDialog' ) );
         editor.ui.addButton( 'Freme', {
-            label: 'Do the FREME',
-            command: 'freme',
+            label: 'Translate',
+            command: 'fremeTranslate',
             toolbar: 'insert'
         });
 
-        CKEDITOR.dialog.add( 'fremeDialog', this.path + 'dialogs/freme.js' );
+        CKEDITOR.dialog.add( 'fremeTranslateDialog', this.path + 'dialogs/translate.js' );
     }
 });
