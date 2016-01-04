@@ -35,10 +35,12 @@ CKEDITOR.plugins.add('freme', {
 
         CKEDITOR.dialog.add('fremeLinkDialog', this.path + 'dialogs/link.js');
 
-        editor.commands.fremeLink.disable();
+        editor.on('instanceReady', function () {
+            editor.commands.fremeLink.disable();
+        });
 
-        editor.on('selectionChange', function() {
-            if($(editor.document.getSelection().getStartElement().$).attr('its-ta-ident-ref')) {
+        editor.on('selectionChange', function () {
+            if ($(editor.document.getSelection().getStartElement().$).attr('its-ta-ident-ref')) {
                 editor.commands.fremeLink.enable();
             }
             else {
