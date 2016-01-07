@@ -47,6 +47,7 @@ For licensing, see LICENSE.md or http://ckeditor.com/license
     CKEDITOR.replace('editor1', {
         // Load the timestamp plugin.
         extraPlugins: 'freme',
+        extraAllowedContent: 'span[its-ta-class-ref,its-ta-ident-ref,its-ta-confidence]', // Necessary for FREME plugin
         // Rearrange toolbar groups and remove unnecessary plugins.
         toolbarGroups: [
             {name: 'clipboard', groups: ['clipboard', 'undo']},
