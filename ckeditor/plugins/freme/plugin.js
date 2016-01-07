@@ -39,6 +39,10 @@ CKEDITOR.plugins.add('freme', {
             editor.commands.fremeLink.disable();
         });
 
+        editor.on('mode', function () {
+            editor.commands.fremeLink.disable();
+        });
+
         editor.on('selectionChange', function () {
             if ($(editor.document.getSelection().getStartElement().$).attr('its-ta-ident-ref')) {
                 editor.commands.fremeLink.enable();
