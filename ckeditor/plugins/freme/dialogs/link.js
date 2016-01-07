@@ -462,7 +462,7 @@ CKEDITOR.dialog.add('fremeLinkDialog', function (editor) {
                     {
                         type: 'html',
                         id: 'explore-output',
-                        html: '<div style="max-width: 80vw; max-height: 80vh; overflow: auto"></div>'
+                        html: '<div style="max-width: 25vw; max-height: 60vh; overflow: auto"></div>'
                     }
                 ]
             }
@@ -476,6 +476,7 @@ CKEDITOR.dialog.add('fremeLinkDialog', function (editor) {
             this.getContentElement('tab-main', 'text-entity').getElement().getElementsByTag('span').getItem(0).setText(text);
             this.getContentElement('tab-main', 'text-type').getElement().getElementsByTag('span').getItem(0).setText(type);
             this.getContentElement('tab-main', 'text-resource').getElement().getElementsByTag('span').getItem(0).setText(resource);
+            this.getContentElement('tab-explore', 'explore-output').getElement().$.innerHTML = '';
         }
     };
 
