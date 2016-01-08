@@ -4,6 +4,7 @@
 CKEDITOR.dialog.add('fremeLinkDialog', function (editor) {
 
     // TODO cache old data?
+    var endpoints = [['DBPedia', 'http://dbpedia.org/sparql']];
 
     var templateJSON = [
         {
@@ -446,6 +447,13 @@ CKEDITOR.dialog.add('fremeLinkDialog', function (editor) {
                 label: 'Explore resource',
                 elements: [
                     {
+                        type: 'select',
+                        id: 'endpoint',
+                        label: 'Endpoint',
+                        items: endpoints,
+                        default: 'http://dbpedia.org/sparql'
+                    },
+                    {
                         type: 'button',
                         id: 'explore-do',
                         label: 'Explore',
@@ -453,7 +461,7 @@ CKEDITOR.dialog.add('fremeLinkDialog', function (editor) {
                         onClick: function () {
                             var dialog = this.getDialog();
                             var url = $(dialog.getContentElement('tab-main', 'text-resource').getElement().$).find('span').text();
-                            var endpoint = 'http://dbpedia.org/sparql';
+                            var endpoint = dialog.getValueOf('tab-explore', 'endpoint');
                             explore(url, endpoint, function (err, obj) {
                                 buildOverview(editor, dialog.getContentElement('tab-explore', 'explore-output').getElement().$, obj);
                             });
@@ -938,8 +946,8 @@ CKEDITOR.dialog.add('fremeLinkDialog', function (editor) {
         $el.empty();
         $el.html(html);
         $el.find('button').on('click', function () {
-            placeCaretAtEndOfEl(editor);
-            editor.insertText(' (' + $(this).parents('dd').find('span').text() + ')');
+            placeCaretAfterEl(editor);
+            editor.insertText(' ' + $(this).parents('dd').find('span').text());
         });
     }
 
@@ -1009,6 +1017,21 @@ CKEDITOR.dialog.add('fremeLinkDialog', function (editor) {
         var range = editor.createRange();
         range.selectNodeContents(sel.getCommonAncestor());
         range.collapse(false);
+        sel.selectRanges([range]);
+    }
+
+    /**
+     * @param editor
+     */
+    function placeCaretAfterEl(editor) {
+        var sel = editor.document.getSelection();
+        var range = editor.createRange();
+        var el = sel.getCommonAncestor();
+        if (el.$.nodeType === 3) {
+            el = el.getParent();
+        }
+        range.selectNodeContents(el.getNext());
+        range.collapse(true);
         sel.selectRanges([range]);
     }
 });
