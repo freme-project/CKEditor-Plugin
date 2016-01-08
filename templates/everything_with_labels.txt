@@ -1,0 +1,14 @@
+CONSTRUCT {
+ <http://dbpedia.org/resource/Barack_Obama> ?p ?o.
+ ?p <http://www.w3.org/2000/01/rdf-schema#label> ?l.
+} WHERE {
+ {
+   SELECT * WHERE {
+    <http://dbpedia.org/resource/Barack_Obama> ?p ?o.
+
+    OPTIONAL {
+     ?p <http://www.w3.org/2000/01/rdf-schema#label> ?l.
+    }
+   }
+ }
+}
