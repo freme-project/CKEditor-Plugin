@@ -1,0 +1,129 @@
+CONSTRUCT {
+    <http://dbpedia.org/resource/Barack_Obama> <http://dbpedia.org/property/name> ?name.
+    <http://dbpedia.org/resource/Barack_Obama> <http://dbpedia.org/property/birthDate> ?birthDate.
+    <http://dbpedia.org/resource/Barack_Obama> <http://dbpedia.org/property/birthPlace> ?birthPlace.
+    <http://dbpedia.org/resource/Barack_Obama> <http://dbpedia.org/property/children> ?children.
+    <http://dbpedia.org/resource/Barack_Obama> <http://dbpedia.org/property/spouse> ?spouse.
+    <http://dbpedia.org/resource/Barack_Obama> <http://dbpedia.org/ontology/abstract> ?abstract.
+    <http://dbpedia.org/resource/Barack_Obama> <http://dbpedia.org/ontology/tumbnail> ?picture.
+    <http://dbpedia.org/resource/Barack_Obama> <http://dbpedia.org/ontology/wikiPageExternalLink> ?link.
+    <http://dbpedia.org/resource/Barack_Obama> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?type.
+
+    <http://dbpedia.org/property/name> <http://www.w3.org/2000/01/rdf-schema#label> ?labelName.
+    <http://dbpedia.org/property/birthDate> <http://www.w3.org/2000/01/rdf-schema#label> ?labelBirthDate.
+    <http://dbpedia.org/property/birthPlace> <http://www.w3.org/2000/01/rdf-schema#label> ?labelBirthPlace.
+    <http://dbpedia.org/property/children> <http://www.w3.org/2000/01/rdf-schema#label> ?labelChildren.
+    <http://dbpedia.org/property/spouse> <http://www.w3.org/2000/01/rdf-schema#label> ?labelSpouse.
+    <http://dbpedia.org/ontology/abstract> <http://www.w3.org/2000/01/rdf-schema#label> ?labelAbstract.
+    <http://dbpedia.org/ontology/thumbnail> <http://www.w3.org/2000/01/rdf-schema#label> ?labelPicture.
+    <http://dbpedia.org/ontology/wikiPageExternalLink> <http://www.w3.org/2000/01/rdf-schema#label> ?labelLink.
+    <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2000/01/rdf-schema#label> ?labelType.
+} WHERE {
+    {
+        select * where {
+
+            <http://dbpedia.org/resource/Barack_Obama> <http://dbpedia.org/property/name> ?name.
+
+            OPTIONAL {
+             <http://dbpedia.org/property/name> <http://www.w3.org/2000/01/rdf-schema#label> ?labelName
+            }
+
+        }
+    }
+    UNION
+    {
+        select * where {
+
+            <http://dbpedia.org/resource/Barack_Obama> <http://dbpedia.org/property/birthDate> ?birthDate.
+
+            OPTIONAL {
+                <http://dbpedia.org/property/birthDate> <http://www.w3.org/2000/01/rdf-schema#label> ?labelBirthDate
+            }
+
+        }
+    }
+    UNION
+    {
+        select * where {
+
+            <http://dbpedia.org/resource/Barack_Obama> <http://dbpedia.org/property/birthPlace> ?birthPlace.
+
+            OPTIONAL {
+                <http://dbpedia.org/property/birthPlace> <http://www.w3.org/2000/01/rdf-schema#label> ?labelBirthPlace
+            }
+
+        }
+    }
+    UNION
+    {
+        select * where {
+
+            <http://dbpedia.org/resource/Barack_Obama> <http://dbpedia.org/property/children> ?children.
+
+            OPTIONAL {
+                <http://dbpedia.org/property/children> <http://www.w3.org/2000/01/rdf-schema#label> ?labelChildren
+            }
+
+        }
+    }
+    UNION
+    {
+        select * where {
+
+            <http://dbpedia.org/resource/Barack_Obama> <http://dbpedia.org/property/spouse> ?spouse.
+
+            OPTIONAL {
+                <http://dbpedia.org/property/spouse> <http://www.w3.org/2000/01/rdf-schema#label> ?labelSpouse
+            }
+
+        }
+    }
+    UNION
+    {
+        select * where {
+
+            <http://dbpedia.org/resource/Barack_Obama> <http://dbpedia.org/ontology/abstract> ?abstract.
+
+            OPTIONAL {
+                <http://dbpedia.org/ontology/abstract> <http://www.w3.org/2000/01/rdf-schema#label> ?labelAbstract
+            }
+
+        }
+    }
+    UNION
+    {
+        select * where {
+
+            <http://dbpedia.org/resource/Barack_Obama> <http://dbpedia.org/ontology/thumbnail> ?picture.
+
+            OPTIONAL {
+                <http://dbpedia.org/ontology/thumbnail> <http://www.w3.org/2000/01/rdf-schema#label> ?labelPicture
+            }
+
+        }
+    }
+    UNION
+    {
+        select * where {
+
+            <http://dbpedia.org/resource/Barack_Obama> <http://dbpedia.org/ontology/wikiPageExternalLink> ?link.
+
+            OPTIONAL {
+                <http://dbpedia.org/ontology/wikiPageExternalLink> <http://www.w3.org/2000/01/rdf-schema#label> ?labelLink
+            }
+
+        }
+    }
+    UNION
+    {
+        select * where {
+
+            <http://dbpedia.org/resource/Barack_Obama> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?type.
+
+            OPTIONAL {
+                <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2000/01/rdf-schema#label> ?labelType
+            }
+
+        }
+    }
+}
