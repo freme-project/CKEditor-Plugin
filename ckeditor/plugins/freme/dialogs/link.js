@@ -535,7 +535,8 @@ CKEDITOR.dialog.add('fremeLinkDialog', function (editor) {
             this.getContentElement('tab-main', 'text-entity').getElement().getElementsByTag('span').getItem(0).setText(text);
             this.getContentElement('tab-main', 'text-type').getElement().getElementsByTag('span').getItem(0).setText(type);
             this.getContentElement('tab-main', 'text-resource').getElement().getElementsByTag('span').getItem(0).setText(resource);
-            this.getContentElement('tab-explore', 'explore-output').getElement().$.innerHTML = '';
+            //this.getContentElement('tab-explore', 'explore-output').getElement().$.innerHTML = '';
+            this.getContentElement('tab-template', 'template-output').getElement().$.innerHTML = '';
         }
     };
 

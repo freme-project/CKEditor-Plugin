@@ -34,6 +34,12 @@ CKEDITOR.dialog.add('fremeTranslateDialog', function (editor) {
             .fail(error);
     }
 
+    function endIt(todo) {
+        if (todo === 0) {
+            editor.showNotification('e-Translate completed!', 'success');
+        }
+    }
+
     //function doOldRequest(method, url, data, headers, success, error) {
     //    var httprequest;
     //    if (window.XMLHttpRequest) {
@@ -98,15 +104,19 @@ CKEDITOR.dialog.add('fremeTranslateDialog', function (editor) {
             var inLang = this.getValueOf('tab-main', 'lang-in'),
                 outLang = this.getValueOf('tab-main', 'lang-out'),
                 doc = editor.document,
-                goodTags = ['h1', 'h2', 'h3', 'blockquote', 'p'];
+                goodTags = ['h1', 'h2', 'h3', 'blockquote', 'p'],
+                todo = 0;
             // TODO take into account the async stuff..
+            editor.showNotification('e-Translate started!');
             for (var i = 0; i < goodTags.length; i++) {
                 var currTag = goodTags[i];
                 var nodes = doc.getElementsByTag(currTag);
+                todo += nodes.count();
                 for (var j = 0; j < nodes.count(); j++) {
                     var node = nodes.getItem(j);
                     (function (node, currTag, inLang, outLang) {
                         translate($(node.$).text(), inLang, outLang, function (err, text) {
+                            todo--;
                             if (err) {
                                 return console.log(err);
                             }
@@ -114,6 +124,7 @@ CKEDITOR.dialog.add('fremeTranslateDialog', function (editor) {
                             newNode.setText(text);
                             newNode.setStyle('color', 'red');
                             newNode.insertAfter(node);
+                            endIt(todo);
                         });
                     })(node, currTag, inLang, outLang);
                 }

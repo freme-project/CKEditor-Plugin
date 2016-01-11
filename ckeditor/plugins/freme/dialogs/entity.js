@@ -87,6 +87,12 @@ CKEDITOR.dialog.add('fremeEntityDialog', function (editor) {
             .fail(error);
     }
 
+    function endIt(todo) {
+        if (todo === 0) {
+            editor.showNotification('e-Entity completed!', 'success');
+        }
+    }
+
     return {
         title: 'FREME Entity',
         minWidth: 400,
@@ -117,17 +123,22 @@ CKEDITOR.dialog.add('fremeEntityDialog', function (editor) {
             var lang = this.getValueOf('tab-main', 'lang'),
                 dataset = this.getValueOf('tab-main', 'dataset'),
                 doc = editor.document,
-                goodTags = ['h1', 'h2', 'h3', 'blockquote', 'p'];
+                goodTags = ['h1', 'h2', 'h3', 'blockquote', 'p'],
+                todo = 0;
+            editor.showNotification('e-Entity started!');
             for (var i = 0; i < goodTags.length; i++) {
                 var nodes = doc.getElementsByTag(goodTags[i]);
+                todo += nodes.count();
                 for (var j = 0; j < nodes.count(); j++) {
                     var node = nodes.getItem(j);
                     (function (node, lang, dataset) {
                         link($(node.$).text(), lang, dataset, function (err, html) {
+                            todo--;
                             if (err) {
                                 return console.log(err);
                             }
                             node.setHtml(html);
+                            endIt(todo);
                         });
                     })(node, lang, dataset);
                 }
