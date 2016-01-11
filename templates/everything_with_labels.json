@@ -1,0 +1,7 @@
+{
+  "endpoint": "http://dbpedia.org/sparql/",
+  "label": "Everything with labels",
+  "description": "This is a template for the CKEditor, an alternative to explore, with all labels where possible",
+  "endpointType": "sparql",
+  "visibility": "public"
+}
