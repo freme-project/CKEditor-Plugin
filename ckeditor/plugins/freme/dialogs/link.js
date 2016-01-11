@@ -5,6 +5,11 @@ CKEDITOR.dialog.add('fremeLinkDialog', function (editor) {
 
     // TODO cache old data?
     var endpoints = [['DBPedia', 'http://dbpedia.org/sparql']];
+    var endpointTypes = {
+        'http://dbpedia.org/sparql': 'sparql'
+    };
+
+    var fremeBase = '';
 
     var templateJSON = [
         {
@@ -358,12 +363,25 @@ CKEDITOR.dialog.add('fremeLinkDialog', function (editor) {
             "endpointType": "SPARQL"
         }
     ];
-    var templates = [];
-    var labels = {};
+    var basicPersonTemplateId = 4458,
+        everythingTemplateId = 4457;
+    var templates = [['Basic person info', basicPersonTemplateId], ['Everything with labels', everythingTemplateId]];
+    var labels = {
+        'en': {
+            '@id': 'entity url',
+            'http://www.w3.org/2000/01/rdf-schema#label': 'label',
+            'http://www.w3.org/2002/07/owl#sameAs': 'same as',
+            'http://purl.org/dc/terms/subject': 'subject',
+            'http://www.w3.org/2000/01/rdf-schema#comment': 'comment'
+        }
+    };
     for (var i = 0; i < templateJSON.length; i++) {
         var t = templateJSON[i];
-        if (t.description !== '') {
-            templates.push([t.description, t.id]);
+        //if (t.description !== '') {
+        //    templates.push([t.description, t.id]);
+        //}
+        if (!endpointTypes[t.endpoint]) {
+            endpointTypes[t.endpoint] = t.endpointType
         }
     }
 
@@ -443,37 +461,70 @@ CKEDITOR.dialog.add('fremeLinkDialog', function (editor) {
             //    ]
             //},
             {
-                id: 'tab-explore',
-                label: 'Explore resource',
+                id: 'tab-template',
+                label: 'Get info',
                 elements: [
                     {
                         type: 'select',
-                        id: 'endpoint',
+                        id: 'templates',
                         label: 'Endpoint',
-                        items: endpoints,
-                        default: 'http://dbpedia.org/sparql'
+                        items: templates,
+                        default: basicPersonTemplateId
                     },
                     {
                         type: 'button',
-                        id: 'explore-do',
-                        label: 'Explore',
-                        title: 'Explore',
+                        id: 'templates-do',
+                        label: 'Query',
+                        title: 'Query',
                         onClick: function () {
                             var dialog = this.getDialog();
-                            var url = $(dialog.getContentElement('tab-main', 'text-resource').getElement().$).find('span').text();
-                            var endpoint = dialog.getValueOf('tab-explore', 'endpoint');
-                            explore(url, endpoint, function (err, obj) {
-                                buildOverview(editor, dialog.getContentElement('tab-explore', 'explore-output').getElement().$, obj);
+                            placeCaretAfterEl(editor);
+                            var templateId = dialog.getValueOf('tab-template', 'templates');
+                            var entity = $(dialog.getContentElement('tab-main', 'text-resource').getElement().$).find('span').text();
+                            doTemplate(entity, templateId, function (err, obj) {
+                                buildDataTable(editor, dialog.getContentElement('tab-template', 'template-output').getElement().$, obj);
                             });
                         }
                     },
                     {
                         type: 'html',
-                        id: 'explore-output',
-                        html: '<div style="max-width: 25vw; max-height: 60vh; overflow: auto"></div>'
+                        id: 'template-output',
+                        html: '<div class="div-tpl-table" style="max-width: 25vw; max-height: 60vh; overflow: auto"></div>'
                     }
                 ]
             }
+            //{
+            //    id: 'tab-explore',
+            //    label: 'Explore resource',
+            //    elements: [
+            //        {
+            //            type: 'select',
+            //            id: 'endpoint',
+            //            label: 'Endpoint',
+            //            items: endpoints,
+            //            default: 'http://dbpedia.org/sparql'
+            //        },
+            //        {
+            //            type: 'button',
+            //            id: 'explore-do',
+            //            label: 'Explore',
+            //            title: 'Explore',
+            //            onClick: function () {
+            //                var dialog = this.getDialog();
+            //                var url = $(dialog.getContentElement('tab-main', 'text-resource').getElement().$).find('span').text();
+            //                var endpoint = dialog.getValueOf('tab-explore', 'endpoint');
+            //                explore(url, endpoint, function (err, obj) {
+            //                    buildOverview(editor, dialog.getContentElement('tab-explore', 'explore-output').getElement().$, obj);
+            //                });
+            //            }
+            //        },
+            //        {
+            //            type: 'html',
+            //            id: 'explore-output',
+            //            html: '<div style="max-width: 25vw; max-height: 60vh; overflow: auto"></div>'
+            //        }
+            //    ]
+            //}
 
         ],
         onShow: function () {
@@ -489,13 +540,25 @@ CKEDITOR.dialog.add('fremeLinkDialog', function (editor) {
     };
 
     function explore(url, endpoint, cb) {
-        doRequest('POST', 'http://api.freme-project.eu/current/e-link/explore?resource=' + encodeURIComponent(url) + '&endpoint=' + encodeURIComponent(endpoint) + '&endpoint-type=sparql', null, {
+        doRequest('POST', 'http://api.freme-project.eu/current/e-link/explore?resource=' + encodeURIComponent(url) + '&endpoint=' + encodeURIComponent(endpoint) + '&endpoint-type=' + endpointTypes[endpoint], null, {
             'Content-Type': 'application/json',
             'Accept': 'application/ld+json'
         }, function (results) {
             cb(null, results)
         }, function () {
             cb(new Error('Exploring error'));
+        });
+    }
+
+    function doTemplate(entity, templateId, cb) {
+        var turtle = '_:d1 <http://www.w3.org/2005/11/its/rdf#taIdentRef> <' + entity + '>';
+        doRequest('POST', 'http://api-dev.freme-project.eu/current/e-link/documents/?informat=turtle&outformat=json-ld&templateid=' + templateId, turtle, {
+            'Content-Type': 'text/turtle',
+            Accept: 'application/ld+json'
+        }, function (results) {
+            cb(null, results);
+        }, function (err) {
+            cb(new Error('Templating error'));
         });
     }
 
@@ -933,13 +996,21 @@ CKEDITOR.dialog.add('fremeLinkDialog', function (editor) {
          }; */
 
         var $el = $(el);
+        if (!jsonld['@graph']) {
+            var newLd = {};
+            newLd['@context'] = JSON.parse(JSON.stringify(jsonld['@context']));
+            newLd['@graph'] = [];
+            newLd['@graph'].push(JSON.parse(JSON.stringify(jsonld)));
+            delete newLd['@graph']['@context'];
+            jsonld = newLd;
+        }
         jsonld = removeContext(jsonld);
         var properties = createProperties(jsonld);
         var html = '<dl>';
         for (var i = 0; i < properties.length; i++) {
             html += '<dt style="font-weight: bold; font-style: italic; font-size: smaller;">' + properties[i].label + '</dt>';
             for (var j = 0; j < properties[i].values.length; j++) {
-                html += '<dd style="margin-left: 16px;"><span>' + properties[i].values[j] + '</span> <button style="border: 2px outset buttonface; background-color: buttonface;">Insert</button></dd>';
+                html += '<dd style="margin-left: 16px;"><span>' + properties[i].values[j] + '</span> <button class="btn">Insert</button></dd>';
             }
         }
         html += '</dl>';
@@ -951,25 +1022,156 @@ CKEDITOR.dialog.add('fremeLinkDialog', function (editor) {
         });
     }
 
+    function buildDataTable(editor, el, jsonld) {
+        var $el = $(el);
+        if (!jsonld['@graph']) {
+            var newLd = {};
+            newLd['@context'] = JSON.parse(JSON.stringify(jsonld['@context']));
+            newLd['@graph'] = [];
+            newLd['@graph'].push(JSON.parse(JSON.stringify(jsonld)));
+            delete newLd['@graph']['@context'];
+            jsonld = newLd;
+        }
+        jsonld = removeContext(jsonld);
+
+        var labeledTriples = createLabeledTriples(jsonld);
+        var html = '<table><thead><td>Subject</td><td>Predicate</td><td>Object</td><td></td><td>Language</td></thead><tbody>';
+        for (var i = 0; i < labeledTriples.length; i++) {
+            html += '<tr><td>' + labeledTriples[i].s + '</td><td>' + labeledTriples[i].p + '</td><td>' + labeledTriples[i].o + '</td><td><button class="btn btn-insert-o" title="Insert object in text">&#x2191;</button><button class="btn btn-insert-po" title="Insert predicate and object in text">&#x21D1;</button></td><td>' + labeledTriples[i].lang + '</td></tr>';
+        }
+        html += '</tbody></table>';
+        $el.empty();
+        $el.html(html);
+        $el.find('table').DataTable({
+            columnDefs: [
+                {
+                    "targets": [4],
+                    "visible": false
+                }
+            ],
+            initComplete: function () {
+                var langColumn = this.api().column(4);
+                var select = $('<select><option value=""></option></select>')
+                    .on('change', function () {
+                        var val = $.fn.dataTable.util.escapeRegex(
+                            $(this).val()
+                        );
+                        langColumn
+                            .search(val ? '^' + val + '$' : '', true, false)
+                            .draw();
+                    });
+                $el.prepend(select);
+                $el.prepend('<span>Filter on language:</span>');
+                langColumn.data().unique().sort().each(function (d, j) {
+                    select.append('<option value="' + d + '">' + d + '</option>')
+                });
+            }
+        });
+        $el.find('button').on('click', function () {
+            var $btn = $(this);
+            var tds = $btn.parents('tr').eq(0).find('td');
+            var txt = tds.eq(2).text();
+            if ($btn.hasClass('btn-insert-po')) {
+                txt = tds.eq(1).text() + ' ' + txt;
+            }
+            editor.insertText(' ' + txt);
+        });
+    }
+
     function removeContext(obj) {
-        var newObj = {};
+        var newObj = {
+            '@graph': []
+        };
         var context = obj['@context'];
-        for (var key in obj) {
-            if (!obj.hasOwnProperty(key) || key.indexOf('@') === 0) {
-                continue;
-            }
-            var newKey = key;
-            if (context[key]) {
-                if (typeof context[key] === 'object') {
-                    newKey = context[key]['@id'];
+        for (var i = 0; i < obj['@graph'].length; i++) {
+            var newSubj = {};
+            newObj['@graph'].push(newSubj);
+            for (var key in obj['@graph'][i]) {
+                if (!obj['@graph'][i].hasOwnProperty(key)) {
+                    continue;
                 }
-                else {
-                    newKey = context[key];
+                var newKey = key;
+                if (context[key]) {
+                    if (typeof context[key] === 'object') {
+                        newKey = context[key]['@id'];
+                    }
+                    else {
+                        newKey = context[key];
+                    }
                 }
+                newSubj[newKey] = obj['@graph'][i][key];
             }
-            newObj[newKey] = obj[key];
         }
         return newObj;
+    }
+
+    function createLabeledTriples(jsonld) {
+        var labelTriples = [];
+        for (var i = 0; i < jsonld['@graph'].length; i++) {
+            var subject = jsonld['@graph'][i];
+            if (Object.keys(subject).length <= 2) {
+                continue;
+            }
+            for (var predicate in subject) {
+                if (!subject.hasOwnProperty(predicate)) {
+                    continue;
+                }
+                var objects = typeof subject[predicate] === 'object' ? [].concat(subject[predicate]) : [].concat({
+                    '@language': 'en',
+                    '@value': subject[predicate]
+                });
+                for (var j = 0; j < objects.length; j++) {
+                    if (typeof objects[j] !== 'object') {
+                        objects[j] = {'@language': 'en', '@value': objects[j]};
+                    }
+                    var sLabel = getLabel(subject['@id'], objects[j]['@language'], jsonld);
+                    if (sLabel === 'geen label') {
+                        sLabel = getLabel(subject['@id'], 'en', jsonld);
+                        if (sLabel === 'geen label') {
+                            sLabel = subject['@id'];
+                        }
+                    }
+                    var pLabel = getLabel(predicate, objects[j]['@language'], jsonld);
+                    if (pLabel === 'geen label') {
+                        pLabel = getLabel(predicate, 'en', jsonld);
+                        if (pLabel === 'geen label') {
+                            pLabel = predicate;
+                        }
+                    }
+                    var oLabel = getLabel(objects[j]['@value'], objects[j]['@language'], jsonld);
+                    if (oLabel === 'geen label') {
+                        oLabel = objects[j]['@value'];
+                    }
+                    labelTriples.push({
+                        s: sLabel, p: pLabel, o: oLabel, lang: objects[j]['@language']
+                    });
+                }
+            }
+        }
+        return labelTriples;
+    }
+
+    function getLabel(subject, lang, jsonld) {
+        if (!labels[lang]) {
+            labels[lang] = {};
+        }
+        if (!labels[lang][subject]) {
+            labels[lang][subject] = 'geen label';
+            for (var i = 0; i < jsonld['@graph'].length; i++) {
+                if (jsonld['@graph'][i]['@id'] === subject) {
+                    if (jsonld['@graph'][i]['http://www.w3.org/2000/01/rdf-schema#label']) {
+                        var labelValues = [].concat(jsonld['@graph'][i]['http://www.w3.org/2000/01/rdf-schema#label']);
+                        for (var j = 0; j < labelValues.length; j++) {
+                            if (!labels[labelValues[j]['@language']]) {
+                                labels[labelValues[j]['@language']] = {}
+                            }
+                            labels[labelValues[j]['@language']][subject] = labelValues[j]['@value'];
+                        }
+                    }
+                }
+            }
+        }
+        return labels[lang][subject];
     }
 
     function createProperties(obj) {
@@ -979,7 +1181,7 @@ CKEDITOR.dialog.add('fremeLinkDialog', function (editor) {
             if (!obj.hasOwnProperty(key)) {
                 continue;
             }
-            if (typeof obj[key] === 'string') {
+            if (typeof obj[key] !== 'object') {
                 obj[key] = [obj[key]];
             }
             for (var i = 0; i < obj[key].length; i++) {
