@@ -1,0 +1,7 @@
+{
+  "endpoint": "http://dbpedia.org/sparql/",
+  "label": "Basic location info",
+  "description": "This is a template for the CKEditor, where basic location info from DBPedia is returned",
+  "endpointType": "sparql",
+  "visibility": "public"
+}
