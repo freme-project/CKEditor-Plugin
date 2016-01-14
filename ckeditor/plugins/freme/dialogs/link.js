@@ -363,9 +363,7 @@ CKEDITOR.dialog.add('fremeLinkDialog', function (editor) {
             "endpointType": "SPARQL"
         }
     ];
-    var basicPersonTemplateId = 4458,
-        everythingTemplateId = 4457;
-    var templates = [['Basic person info', basicPersonTemplateId], ['Everything with labels', everythingTemplateId]];
+    var templates = [['Basic person info', 4458], ['Basic location info', 4459], ['Everything with labels', 4457]];
     var labels = {
         'en': {
             '@id': 'entity url',
@@ -468,8 +466,7 @@ CKEDITOR.dialog.add('fremeLinkDialog', function (editor) {
                         type: 'select',
                         id: 'templates',
                         label: 'Endpoint',
-                        items: templates,
-                        default: basicPersonTemplateId
+                        items: templates
                     },
                     {
                         type: 'button',

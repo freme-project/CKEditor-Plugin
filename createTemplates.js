@@ -59,6 +59,7 @@ request({
                         }
 
                         data[0] = data[0].replace(/http:\/\/dbpedia.org\/resource\/Barack_Obama/g, '@@@entity_uri@@@');
+                        data[0] = data[0].replace(/http:\/\/dbpedia.org\/resource\/Paris/g, '@@@entity_uri@@@');
                         postObj.query = data[0];
 
                         request.post({
