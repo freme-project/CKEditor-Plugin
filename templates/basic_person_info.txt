@@ -1,4 +1,5 @@
 CONSTRUCT {
+    <http://dbpedia.org/resource/Barack_Obama> <http://www.w3.org/2000/01/rdf-schema#label> ?label.
     <http://dbpedia.org/resource/Barack_Obama> <http://dbpedia.org/property/name> ?name.
     <http://dbpedia.org/resource/Barack_Obama> <http://dbpedia.org/property/birthDate> ?birthDate.
     <http://dbpedia.org/resource/Barack_Obama> <http://dbpedia.org/property/birthPlace> ?birthPlace.
@@ -7,7 +8,6 @@ CONSTRUCT {
     <http://dbpedia.org/resource/Barack_Obama> <http://dbpedia.org/ontology/abstract> ?abstract.
     <http://dbpedia.org/resource/Barack_Obama> <http://dbpedia.org/ontology/tumbnail> ?picture.
     <http://dbpedia.org/resource/Barack_Obama> <http://dbpedia.org/ontology/wikiPageExternalLink> ?link.
-    <http://dbpedia.org/resource/Barack_Obama> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?type.
 
     <http://dbpedia.org/property/name> <http://www.w3.org/2000/01/rdf-schema#label> ?labelName.
     <http://dbpedia.org/property/birthDate> <http://www.w3.org/2000/01/rdf-schema#label> ?labelBirthDate.
@@ -17,8 +17,20 @@ CONSTRUCT {
     <http://dbpedia.org/ontology/abstract> <http://www.w3.org/2000/01/rdf-schema#label> ?labelAbstract.
     <http://dbpedia.org/ontology/thumbnail> <http://www.w3.org/2000/01/rdf-schema#label> ?labelPicture.
     <http://dbpedia.org/ontology/wikiPageExternalLink> <http://www.w3.org/2000/01/rdf-schema#label> ?labelLink.
-    <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2000/01/rdf-schema#label> ?labelType.
+    <http://www.w3.org/2000/01/rdf-schema#label> <http://www.w3.org/2000/01/rdf-schema#label> ?labelLabel.
 } WHERE {
+    {
+        select * where {
+
+            <http://dbpedia.org/resource/Barack_Obama> <http://www.w3.org/2000/01/rdf-schema#label> ?label.
+
+            OPTIONAL {
+             <http://www.w3.org/2000/01/rdf-schema#label> <http://www.w3.org/2000/01/rdf-schema#label> ?labelLabel.
+            }
+
+        }
+    }
+    UNION
     {
         select * where {
 
@@ -110,18 +122,6 @@ CONSTRUCT {
 
             OPTIONAL {
                 <http://dbpedia.org/ontology/wikiPageExternalLink> <http://www.w3.org/2000/01/rdf-schema#label> ?labelLink
-            }
-
-        }
-    }
-    UNION
-    {
-        select * where {
-
-            <http://dbpedia.org/resource/Barack_Obama> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?type.
-
-            OPTIONAL {
-                <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2000/01/rdf-schema#label> ?labelType
             }
 
         }

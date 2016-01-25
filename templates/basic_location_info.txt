@@ -2,6 +2,7 @@ PREFIX dbo: <http://dbpedia.org/ontology/>
 PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
 
 CONSTRUCT {
+    <http://dbpedia.org/resource/Paris> <http://www.w3.org/2000/01/rdf-schema#label> ?label.
     <http://dbpedia.org/resource/Paris> dbo:country ?country.
     <http://dbpedia.org/resource/Paris> dbo:mayor ?mayor.
     <http://dbpedia.org/resource/Paris> dbo:populationTotal ?populationTotal.
@@ -9,7 +10,6 @@ CONSTRUCT {
     <http://dbpedia.org/resource/Paris> geo:lat ?lat.
     <http://dbpedia.org/resource/Paris> <http://dbpedia.org/ontology/abstract> ?abstract.
     <http://dbpedia.org/resource/Paris> <http://dbpedia.org/ontology/tumbnail> ?picture.
-    <http://dbpedia.org/resource/Paris> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?type.
 
     dbo:country <http://www.w3.org/2000/01/rdf-schema#label> ?labelCountry.
     dbo:mayor <http://www.w3.org/2000/01/rdf-schema#label> ?labelMayor.
@@ -18,8 +18,20 @@ CONSTRUCT {
     geo:lat <http://www.w3.org/2000/01/rdf-schema#label> ?labelLat.
     <http://dbpedia.org/ontology/abstract> <http://www.w3.org/2000/01/rdf-schema#label> ?labelAbstract.
     <http://dbpedia.org/ontology/thumbnail> <http://www.w3.org/2000/01/rdf-schema#label> ?labelPicture.
-    <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2000/01/rdf-schema#label> ?labelType.
+    <http://www.w3.org/2000/01/rdf-schema#label> <http://www.w3.org/2000/01/rdf-schema#label> ?labelLabel.
 } WHERE {
+    {
+        select * where {
+
+            <http://dbpedia.org/resource/Paris> <http://www.w3.org/2000/01/rdf-schema#label> ?label.
+
+            OPTIONAL {
+             <http://www.w3.org/2000/01/rdf-schema#label> <http://www.w3.org/2000/01/rdf-schema#label> ?labelLabel.
+            }
+
+        }
+    }
+    UNION
     {
         select * where {
 
@@ -99,18 +111,6 @@ CONSTRUCT {
 
             OPTIONAL {
                 <http://dbpedia.org/ontology/thumbnail> <http://www.w3.org/2000/01/rdf-schema#label> ?labelPicture
-            }
-
-        }
-    }
-    UNION
-    {
-        select * where {
-
-            <http://dbpedia.org/resource/Paris> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?type.
-
-            OPTIONAL {
-                <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2000/01/rdf-schema#label> ?labelType
             }
 
         }
