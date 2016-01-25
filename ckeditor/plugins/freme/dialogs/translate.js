@@ -12,7 +12,7 @@ CKEDITOR.dialog.add('fremeTranslateDialog', function (editor) {
         doRequest('POST',
             'http://api.freme-project.eu/current/e-translation/tilde?informat=text&outformat=json-ld&source-lang=' + sourceLang.toLowerCase() + '&target-lang=' + targetLang.toLowerCase(),
             sourceText,
-            {'Content-Type': 'text/n3', Accept: 'text/n3'},
+            {'Content-Type': 'text/plain', Accept: 'application/json+ld'},
             function (data) {
                 cb(null, data.target['@value']);
             },
@@ -118,6 +118,7 @@ CKEDITOR.dialog.add('fremeTranslateDialog', function (editor) {
                         translate($(node.$).text(), inLang, outLang, function (err, text) {
                             todo--;
                             if (err) {
+                                editor.showNotification('e-Translate failed!', 'warning');
                                 return console.log(err);
                             }
                             var newNode = new CKEDITOR.dom.element(currTag);
