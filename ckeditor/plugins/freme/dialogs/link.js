@@ -405,6 +405,38 @@ CKEDITOR.dialog.add('fremeLinkDialog', function (editor) {
         buttons: [CKEDITOR.dialog.okButton],
         contents: [
             {
+                id: 'tab-template',
+                label: 'Get info',
+                elements: [
+                    {
+                        type: 'select',
+                        id: 'templates',
+                        items: templates
+                    },
+                    {
+                        type: 'button',
+                        id: 'templates-do',
+                        label: 'Search',
+                        title: 'Search',
+                        onClick: function () {
+                            var dialog = this.getDialog();
+                            placeCaretAfterEl(editor);
+                            // TODO fix: only when clicking a button!!
+                            var templateId = dialog.getValueOf('tab-template', 'templates');
+                            var entity = $(dialog.getContentElement('tab-main', 'text-resource').getElement().$).find('span').text();
+                            doTemplate(entity, templateId, function (err, obj) {
+                                buildDataTable(editor, dialog.getContentElement('tab-template', 'template-output').getElement().$, obj);
+                            });
+                        }
+                    },
+                    {
+                        type: 'html',
+                        id: 'template-output',
+                        html: '<div class="div-tpl-table" style="max-height: 60vh; overflow: auto"></div>'
+                    }
+                ]
+            },
+            {
                 id: 'tab-main',
                 label: 'Main info',
                 elements: [
@@ -422,71 +454,6 @@ CKEDITOR.dialog.add('fremeLinkDialog', function (editor) {
                         type: 'html',
                         id: 'text-resource',
                         html: '<p>Resource: <span></span></p>'
-                    }
-                ]
-            },
-            //{
-            //    id: 'tab-template',
-            //    label: 'Template Selection',
-            //    elements: [
-            //        {
-            //            type: 'select',
-            //            id: 'template',
-            //            label: 'Template',
-            //            items: templates,
-            //            default: 'basic'
-            //        },
-            //        {
-            //            type: 'button',
-            //            id: 'template-do',
-            //            label: 'Fetch data',
-            //            title: 'Fetch data',
-            //            onClick: function () {
-            //                console.log('TO BE IMPLEMENTED');
-            //                //fetchTemplate(this.getDialog().getValueOf('tab-template', 'template'), function(err, turtle) {
-            //                //    if (err) {
-            //                //        return console.log(err);
-            //                //    }
-            //                //});
-            //            }
-            //        },
-            //        {
-            //            type: 'html',
-            //            id: 'template-output',
-            //            html: '<pre><code></code></pre>'
-            //        }
-            //        // TODO button
-            //    ]
-            //},
-            {
-                id: 'tab-template',
-                label: 'Get info',
-                elements: [
-                    {
-                        type: 'select',
-                        id: 'templates',
-                        label: 'Endpoint',
-                        items: templates
-                    },
-                    {
-                        type: 'button',
-                        id: 'templates-do',
-                        label: 'Query',
-                        title: 'Query',
-                        onClick: function () {
-                            var dialog = this.getDialog();
-                            placeCaretAfterEl(editor);
-                            var templateId = dialog.getValueOf('tab-template', 'templates');
-                            var entity = $(dialog.getContentElement('tab-main', 'text-resource').getElement().$).find('span').text();
-                            doTemplate(entity, templateId, function (err, obj) {
-                                buildDataTable(editor, dialog.getContentElement('tab-template', 'template-output').getElement().$, obj);
-                            });
-                        }
-                    },
-                    {
-                        type: 'html',
-                        id: 'template-output',
-                        html: '<div class="div-tpl-table" style="max-width: 25vw; max-height: 60vh; overflow: auto"></div>'
                     }
                 ]
             }
@@ -1033,14 +1000,15 @@ CKEDITOR.dialog.add('fremeLinkDialog', function (editor) {
         jsonld = removeContext(jsonld);
 
         var labeledTriples = createLabeledTriples(jsonld);
-        var html = '<table><thead><td>Subject</td><td>Predicate</td><td>Object</td><td></td><td>Language</td></thead><tbody>';
+        var html = '<table style="width: 100%;"><thead><td>Subject</td><td>Predicate</td><td>Object</td><td></td><td>Language</td></thead><tbody>';
         for (var i = 0; i < labeledTriples.length; i++) {
             html += '<tr><td>' + labeledTriples[i].s + '</td><td>' + labeledTriples[i].p + '</td><td>' + labeledTriples[i].o + '</td><td><button class="btn btn-insert-o" title="Insert object in text">&#x2191;</button><button class="btn btn-insert-po" title="Insert predicate and object in text">&#x21D1;</button></td><td>' + labeledTriples[i].lang + '</td></tr>';
         }
         html += '</tbody></table>';
         $el.empty();
         $el.html(html);
-        $el.find('table').DataTable({
+        var $table = $el.find('table');
+        $table.DataTable({
             columnDefs: [
                 {
                     "targets": [4],
@@ -1065,7 +1033,7 @@ CKEDITOR.dialog.add('fremeLinkDialog', function (editor) {
                 });
             }
         });
-        $el.find('button').on('click', function () {
+        $table.find('button').on('click', function () {
             var $btn = $(this);
             var tds = $btn.parents('tr').eq(0).find('td');
             var txt = tds.eq(2).text();
@@ -1074,6 +1042,17 @@ CKEDITOR.dialog.add('fremeLinkDialog', function (editor) {
             }
             editor.insertText(' ' + txt);
         });
+        $table.on( 'draw.dt', function () {
+            $table.find('button').on('click', function () {
+                var $btn = $(this);
+                var tds = $btn.parents('tr').eq(0).find('td');
+                var txt = tds.eq(2).text();
+                if ($btn.hasClass('btn-insert-po')) {
+                    txt = tds.eq(1).text() + ' ' + txt;
+                }
+                editor.insertText(' ' + txt);
+            });
+        } );
     }
 
     function removeContext(obj) {
