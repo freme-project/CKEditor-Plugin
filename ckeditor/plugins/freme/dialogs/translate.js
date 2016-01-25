@@ -34,37 +34,11 @@ CKEDITOR.dialog.add('fremeTranslateDialog', function (editor) {
             .fail(error);
     }
 
-    function endIt(todo) {
+    function endIt(todo, eTransNot) {
         if (todo === 0) {
-            editor.showNotification('e-Translate completed!', 'success');
+            eTransNot.update({ type: 'success', message: 'e-Translate completed!' });
         }
     }
-
-    //function doOldRequest(method, url, data, headers, success, error) {
-    //    var httprequest;
-    //    if (window.XMLHttpRequest) {
-    //        httprequest = new XMLHttpRequest();
-    //    } else {
-    //        // code for older browsers
-    //        httprequest = new ActiveXObject("Microsoft.XMLHTTP");
-    //    }
-    //    httprequest.onreadystatechange = function () {
-    //        if (httprequest.readyState == 4 && httprequest.status == 200) {
-    //            success(httprequest, httprequest.responseText);
-    //        }
-    //        else {
-    //            error(httprequest);
-    //        }
-    //    };
-    //    httprequest.open(method, url, true);
-    //    for (var key in headers) {
-    //        if (headers.hasOwnProperty(key)) {
-    //            httprequest.setRequestHeader(key, headers[key]);
-    //        }
-    //    }
-    //    httprequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    //    httprequest.send(data);
-    //}
 
     return {
         title: 'FREME Translate',
@@ -107,7 +81,7 @@ CKEDITOR.dialog.add('fremeTranslateDialog', function (editor) {
                 goodTags = ['h1', 'h2', 'h3', 'blockquote', 'p'],
                 todo = 0;
             // TODO take into account the async stuff..
-            editor.showNotification('e-Translate started!');
+            var eTransNot = editor.showNotification('e-Translate started!');
             for (var i = 0; i < goodTags.length; i++) {
                 var currTag = goodTags[i];
                 var nodes = doc.getElementsByTag(currTag);
@@ -118,14 +92,14 @@ CKEDITOR.dialog.add('fremeTranslateDialog', function (editor) {
                         translate($(node.$).text(), inLang, outLang, function (err, text) {
                             todo--;
                             if (err) {
-                                editor.showNotification('e-Translate failed!', 'warning');
+                                eTransNot.update({ type: 'warning', message: 'e-Translate failed!' });
                                 return console.log(err);
                             }
                             var newNode = new CKEDITOR.dom.element(currTag);
                             newNode.setText(text);
                             newNode.setStyle('color', 'red');
                             newNode.insertAfter(node);
-                            endIt(todo);
+                            endIt(todo, eTransNot);
                         });
                     })(node, currTag, inLang, outLang);
                 }
