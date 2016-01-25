@@ -125,29 +125,50 @@ CKEDITOR.dialog.add('fremeEntityDialog', function (editor) {
                 doc = editor.document,
                 goodTags = ['h1', 'h2', 'h3', 'blockquote', 'p'],
                 todo = 0;
-            var eEntityNot = editor.showNotification('e-Entity started!');
+            var eEntityNot = editor.showNotification('e-Entity started!', 'progress', 0);
+            var nodes = [];
             for (var i = 0; i < goodTags.length; i++) {
-                var nodes = doc.getElementsByTag(goodTags[i]);
-                todo += nodes.count();
-                for (var j = 0; j < nodes.count(); j++) {
-                    var node = nodes.getItem(j);
-                    (function (node, lang, dataset) {
-                        var $el = $(node.$.outerHTML);
-                        $el.find('[its-ta-class-ref]').each(function() {
-                            this.outerHTML = $(this).text();
-                        });
-                        link($el.html(), lang, dataset, function (err, html) {
-                            todo--;
-                            if (err) {
-                                return console.log(err);
-                            }
-                            node.setHtml(html);
-                            endIt(todo, eEntityNot);
-                        });
-                    })(node, lang, dataset);
+                var nodeList = doc.getElementsByTag(goodTags[i]);
+                for (var j = 0; j < nodeList.count(); j++) {
+                    nodes.push(nodeList.getItem(j));
                 }
             }
-
+            asyncLoop({
+                length: nodes.length,
+                functionToLoop: function (loop, i) {
+                    var node = nodes[i];
+                    var $el = $(node.$.outerHTML);
+                    $el.find('[its-ta-class-ref]').each(function () {
+                        this.outerHTML = $(this).text();
+                    });
+                    link($el.html(), lang, dataset, function (err, html) {
+                        todo--;
+                        if (err) {
+                            return console.log(err);
+                        }
+                        node.setHtml(html);
+                        eEntityNot.update({progress: (i + 1) / nodes.length});
+                        return loop();
+                    });
+                },
+                callback: function () {
+                    eEntityNot.update({type: 'success', message: 'e-Entity completed!'});
+                }
+            });
         }
     };
 });
+
+var asyncLoop = function (o) {
+    var i = -1;
+
+    var loop = function () {
+        i++;
+        if (i == o.length) {
+            o.callback();
+            return;
+        }
+        o.functionToLoop(loop, i);
+    };
+    loop();//init
+};
