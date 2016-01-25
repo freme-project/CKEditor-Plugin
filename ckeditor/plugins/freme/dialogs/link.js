@@ -420,7 +420,7 @@ CKEDITOR.dialog.add('fremeLinkDialog', function (editor) {
                         title: 'Search',
                         onClick: function () {
                             var dialog = this.getDialog();
-                            placeCaretAfterEl(editor);
+                            placeCaretAfterIdentRef(editor);
                             // TODO fix: only when clicking a button!!
                             var templateId = dialog.getValueOf('tab-template', 'templates');
                             var entity = $(dialog.getContentElement('tab-main', 'text-resource').getElement().$).find('span').text();
@@ -982,7 +982,7 @@ CKEDITOR.dialog.add('fremeLinkDialog', function (editor) {
         $el.empty();
         $el.html(html);
         $el.find('button').on('click', function () {
-            placeCaretAfterEl(editor);
+            placeCaretAfterIdentRef(editor);
             editor.insertText(' ' + $(this).parents('dd').find('span').text());
         });
     }
@@ -1009,6 +1009,7 @@ CKEDITOR.dialog.add('fremeLinkDialog', function (editor) {
         $el.html(html);
         var $table = $el.find('table');
         $table.DataTable({
+            lengthChange: false,
             columnDefs: [
                 {
                     "targets": [4],
@@ -1042,7 +1043,7 @@ CKEDITOR.dialog.add('fremeLinkDialog', function (editor) {
             }
             editor.insertText(' ' + txt);
         });
-        $table.on( 'draw.dt', function () {
+        $table.on('draw.dt', function () {
             $table.find('button').on('click', function () {
                 var $btn = $(this);
                 var tds = $btn.parents('tr').eq(0).find('td');
@@ -1052,7 +1053,7 @@ CKEDITOR.dialog.add('fremeLinkDialog', function (editor) {
                 }
                 editor.insertText(' ' + txt);
             });
-        } );
+        });
     }
 
     function removeContext(obj) {
@@ -1202,13 +1203,14 @@ CKEDITOR.dialog.add('fremeLinkDialog', function (editor) {
     /**
      * @param editor
      */
-    function placeCaretAfterEl(editor) {
+    function placeCaretAfterIdentRef(editor) {
         var sel = editor.document.getSelection();
         var range = editor.createRange();
-        var el = sel.getCommonAncestor();
-        if (el.$.nodeType === 3) {
-            el = el.getParent();
+        var $identRef = $(sel.getRanges()[0].startContainer.$).parents('span[its-ta-ident-ref]');
+        if ($identRef.length === 0) {
+            return;
         }
+        var el = new CKEDITOR.dom.element($identRef[0]);
         range.selectNodeContents(el.getNext());
         range.collapse(true);
         sel.selectRanges([range]);
