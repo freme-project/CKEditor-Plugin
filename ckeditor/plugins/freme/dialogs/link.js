@@ -443,17 +443,17 @@ CKEDITOR.dialog.add('fremeLinkDialog', function (editor) {
                     {
                         type: 'html',
                         id: 'text-entity',
-                        html: '<p>Entity: <span></span></p>'
+                        html: '<p><strong>Entity</strong>: <span></span></p>'
                     },
                     {
                         type: 'html',
                         id: 'text-type',
-                        html: '<p>Type: <span></span></p>'
+                        html: '<p><strong>Type</strong>: <span></span></p>'
                     },
                     {
                         type: 'html',
                         id: 'text-resource',
-                        html: '<p>Resource: <span></span></p>'
+                        html: '<p><strong>Resource</strong>: <span></span></p>'
                     }
                 ]
             }
