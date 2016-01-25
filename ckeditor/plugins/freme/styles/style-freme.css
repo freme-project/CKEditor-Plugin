@@ -1,8 +1,8 @@
-span[its-ta-class-ref] {
+[its-ta-class-ref] {
     background-color: paleturquoise;
 }
 
-span[its-ta-ident-ref] {
+[its-ta-ident-ref] {
     background-color: moccasin;
 }
 

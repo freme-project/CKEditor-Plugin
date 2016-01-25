@@ -87,9 +87,9 @@ CKEDITOR.dialog.add('fremeEntityDialog', function (editor) {
             .fail(error);
     }
 
-    function endIt(todo) {
+    function endIt(todo, eEntityNot) {
         if (todo === 0) {
-            editor.showNotification('e-Entity completed!', 'success');
+            eEntityNot.update({type: 'success', message: 'e-Entity completed!'});
         }
     }
 
@@ -125,20 +125,24 @@ CKEDITOR.dialog.add('fremeEntityDialog', function (editor) {
                 doc = editor.document,
                 goodTags = ['h1', 'h2', 'h3', 'blockquote', 'p'],
                 todo = 0;
-            editor.showNotification('e-Entity started!');
+            var eEntityNot = editor.showNotification('e-Entity started!');
             for (var i = 0; i < goodTags.length; i++) {
                 var nodes = doc.getElementsByTag(goodTags[i]);
                 todo += nodes.count();
                 for (var j = 0; j < nodes.count(); j++) {
                     var node = nodes.getItem(j);
                     (function (node, lang, dataset) {
-                        link($(node.$).text(), lang, dataset, function (err, html) {
+                        var $el = $(node.$.outerHTML);
+                        $el.find('[its-ta-class-ref]').each(function() {
+                            this.outerHTML = $(this).text();
+                        });
+                        link($el.html(), lang, dataset, function (err, html) {
                             todo--;
                             if (err) {
                                 return console.log(err);
                             }
                             node.setHtml(html);
-                            endIt(todo);
+                            endIt(todo, eEntityNot);
                         });
                     })(node, lang, dataset);
                 }
