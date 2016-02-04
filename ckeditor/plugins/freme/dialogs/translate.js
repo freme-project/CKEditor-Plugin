@@ -4,13 +4,14 @@
 CKEDITOR.dialog.add('fremeTranslateDialog', function (editor) {
     var inLangs = [['Dutch', 'NL'], ['English', 'EN']];
     var outLangs = {
-        'NL': [['English', 'EN'], ['French ', 'FR'], ['German ', 'DE']],
-        'EN': [['Bulgarian ', 'BG'], ['Czech ', 'CS'], ['Danish ', 'DA'], ['Dutch', 'NL'], ['Estonian ', 'ET'], ['Finnish ', 'FI'], ['French ', 'FR'], ['German ', 'DE'], ['Greek ', 'EL'], ['Hungarian', 'HU'], ['Italian ', 'IT'], ['Latvian ', 'LV'], ['Lithuanian ', 'LT'], ['Polish ', 'PL'], ['Portuguese ', 'PT'], ['Romanian ', 'RO'], ['Russian ', 'RU'], ['Slovenian ', 'SL'], ['Spanish ', 'ES'], ['Swedish ', 'SV']]
+        'NL': [['French ', 'FR'], ['German ', 'DE']],
+        'EN': [['Bulgarian ', 'BG'], ['Czech ', 'CS'], ['Danish ', 'DA'], ['Dutch', 'NL'], ['Finnish ', 'FI'], ['German ', 'DE'], ['Greek ', 'EL'], ['Hungarian', 'HU'], ['Italian ', 'IT'], ['Polish ', 'PL'], ['Portuguese ', 'PT'], ['Romanian ', 'RO'], ['Slovenian ', 'SL'], ['Swedish ', 'SV']]
     };
+    var langDefault = ['EN', 'DE'];
 
     function translate(sourceText, sourceLang, targetLang, cb) {
         doRequest('POST',
-            'http://api.freme-project.eu/current/e-translation/tilde?informat=text&outformat=json-ld&source-lang=' + sourceLang.toLowerCase() + '&target-lang=' + targetLang.toLowerCase(),
+            'http://api.freme-project.eu/0.4/e-translation/tilde?informat=text&outformat=json-ld&source-lang=' + sourceLang.toLowerCase() + '&target-lang=' + targetLang.toLowerCase(),
             sourceText,
             {'Content-Type': 'text/plain', Accept: 'application/json+ld'},
             function (data) {
@@ -54,7 +55,7 @@ CKEDITOR.dialog.add('fremeTranslateDialog', function (editor) {
                         id: 'lang-in',
                         label: 'Source Language',
                         items: inLangs,
-                        default: 'EN',
+                        default: langDefault[0],
                         onChange: function (api) {
                             var currVal = this.getValue();
                             var langOut = this.getDialog().getContentElement('tab-main', 'lang-out');
@@ -68,8 +69,8 @@ CKEDITOR.dialog.add('fremeTranslateDialog', function (editor) {
                         type: 'select',
                         id: 'lang-out',
                         label: 'Target Language',
-                        items: outLangs['EN'],
-                        default: 'FR'
+                        items: outLangs[langDefault[0]],
+                        default: langDefault[1]
                     }
                 ]
             }
