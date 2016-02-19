@@ -67,7 +67,15 @@ CKEDITOR.dialog.add('fremeEntityDialog', function (editor) {
             '<p>' + sourceText + '</p>',
             {'Content-Type': 'text/html', Accept: 'text/n3'},
             function (results) {
-                cb(null, results.slice(results.indexOf('<p>') + 3, results.lastIndexOf('</p>')));
+                var result = '';
+                if (results.indexOf('<p>') === -1 && results.indexOf('<p') >= 0) {
+                    // entire paragraph is recognized as one entity
+                    result = '<span' + results.slice(results.indexOf('<p') + 2, results.lastIndexOf('</p>')) + '</span>';
+                }
+                else {
+                    result = results.slice(results.indexOf('<p>') + 3, results.lastIndexOf('</p>'));
+                }
+                cb(null, result);
             },
             function () {
                 cb(new Error('Linking error'));
