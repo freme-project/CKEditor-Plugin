@@ -11,7 +11,7 @@ CKEDITOR.dialog.add('fremeTranslateDialog', function (editor) {
 
     function translate(sourceText, sourceLang, targetLang, cb) {
         doRequest('POST',
-            'http://api.freme-project.eu/0.4/e-translation/tilde?informat=text&outformat=json-ld&source-lang=' + sourceLang.toLowerCase() + '&target-lang=' + targetLang.toLowerCase(),
+            'http://api.freme-project.eu/current/e-translation/tilde?informat=text&outformat=json-ld&source-lang=' + sourceLang.toLowerCase() + '&target-lang=' + targetLang.toLowerCase(),
             sourceText,
             {'Content-Type': 'text/plain', Accept: 'application/json+ld'},
             function (data) {
