@@ -87,12 +87,6 @@ CKEDITOR.dialog.add('fremeEntityDialog', function (editor) {
             .fail(error);
     }
 
-    function endIt(todo, eEntityNot) {
-        if (todo === 0) {
-            eEntityNot.update({type: 'success', message: 'e-Entity completed!'});
-        }
-    }
-
     return {
         title: 'FREME Entity',
         minWidth: 400,

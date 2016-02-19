@@ -4,7 +4,7 @@
 CKEDITOR.dialog.add('fremeTranslateDialog', function (editor) {
     var inLangs = [['Dutch', 'NL'], ['English', 'EN']];
     var outLangs = {
-        'NL': [['French ', 'FR'], ['German ', 'DE']],
+        'NL': [['French ', 'FR'], ['German ', 'DE'], ['English', 'EN']],
         'EN': [['Bulgarian ', 'BG'], ['Czech ', 'CS'], ['Danish ', 'DA'], ['Dutch', 'NL'], ['Finnish ', 'FI'], ['German ', 'DE'], ['Greek ', 'EL'], ['Hungarian', 'HU'], ['Italian ', 'IT'], ['Polish ', 'PL'], ['Portuguese ', 'PT'], ['Romanian ', 'RO'], ['Slovenian ', 'SL'], ['Swedish ', 'SV']]
     };
     var langDefault = ['EN', 'DE'];
