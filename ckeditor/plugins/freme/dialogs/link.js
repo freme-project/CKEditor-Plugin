@@ -367,6 +367,7 @@ CKEDITOR.dialog.add('fremeLinkDialog', function (editor) {
     var labels = {
         'en': {
             '@id': 'entity url',
+            '@type': 'type',
             'http://www.w3.org/2000/01/rdf-schema#label': 'label',
             'http://www.w3.org/2002/07/owl#sameAs': 'same as',
             'http://purl.org/dc/terms/subject': 'subject',
