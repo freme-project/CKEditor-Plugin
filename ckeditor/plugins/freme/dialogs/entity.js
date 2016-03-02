@@ -114,7 +114,7 @@ CKEDITOR.dialog.add('fremeEntityDialog', function (editor) {
                     {
                         type: 'select',
                         id: 'dataset',
-                        label: 'Target Language',
+                        label: 'Target dataset',
                         items: datasets,
                         default: 'dbpedia'
                     }
