@@ -17,7 +17,7 @@ CKEDITOR.plugins.add('freme', {
 
         editor.addCommand('fremeEntity', new CKEDITOR.dialogCommand('fremeEntityDialog'));
         editor.ui.addButton('FremeEntity', {
-            label: 'Link to entities',
+            label: 'Detect concepts',
             command: 'fremeEntity',
             icon: this.path + '/icons/fremeEntity.png',
             toolbar: 'freme'
@@ -41,6 +41,12 @@ CKEDITOR.plugins.add('freme', {
 
         editor.on('mode', function () {
             editor.commands.fremeLink.disable();
+        });
+
+        editor.on('doubleclick', function() {
+            if ($(editor.document.getSelection().getStartElement().$).attr('its-ta-ident-ref')) {
+                editor.openDialog('fremeLinkDialog');
+            }
         });
 
         editor.on('selectionChange', function () {

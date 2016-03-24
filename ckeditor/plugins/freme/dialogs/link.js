@@ -400,7 +400,7 @@ CKEDITOR.dialog.add('fremeLinkDialog', function (editor) {
     }
 
     return {
-        title: 'FREME Link',
+        title: 'Information about <>',
         minWidth: 400,
         minHeight: 200,
         buttons: [CKEDITOR.dialog.okButton],
@@ -458,39 +458,6 @@ CKEDITOR.dialog.add('fremeLinkDialog', function (editor) {
                     }
                 ]
             }
-            //{
-            //    id: 'tab-explore',
-            //    label: 'Explore resource',
-            //    elements: [
-            //        {
-            //            type: 'select',
-            //            id: 'endpoint',
-            //            label: 'Endpoint',
-            //            items: endpoints,
-            //            default: 'http://dbpedia.org/sparql'
-            //        },
-            //        {
-            //            type: 'button',
-            //            id: 'explore-do',
-            //            label: 'Explore',
-            //            title: 'Explore',
-            //            onClick: function () {
-            //                var dialog = this.getDialog();
-            //                var url = $(dialog.getContentElement('tab-main', 'text-resource').getElement().$).find('span').text();
-            //                var endpoint = dialog.getValueOf('tab-explore', 'endpoint');
-            //                explore(url, endpoint, function (err, obj) {
-            //                    buildOverview(editor, dialog.getContentElement('tab-explore', 'explore-output').getElement().$, obj);
-            //                });
-            //            }
-            //        },
-            //        {
-            //            type: 'html',
-            //            id: 'explore-output',
-            //            html: '<div style="max-width: 25vw; max-height: 60vh; overflow: auto"></div>'
-            //        }
-            //    ]
-            //}
-
         ],
         onShow: function () {
             var $el = $(editor.document.getSelection().getStartElement().$);
@@ -500,8 +467,8 @@ CKEDITOR.dialog.add('fremeLinkDialog', function (editor) {
             this.getContentElement('tab-main', 'text-entity').getElement().getElementsByTag('span').getItem(0).setText(text);
             this.getContentElement('tab-main', 'text-type').getElement().getElementsByTag('span').getItem(0).setText(type);
             this.getContentElement('tab-main', 'text-resource').getElement().getElementsByTag('span').getItem(0).setText(resource);
-            //this.getContentElement('tab-explore', 'explore-output').getElement().$.innerHTML = '';
             this.getContentElement('tab-template', 'template-output').getElement().$.innerHTML = '';
+            this.getElement().getFirst().find('.cke_dialog_title').getItem(0).setText('Information about <' + text + '>');
         }
     };
 

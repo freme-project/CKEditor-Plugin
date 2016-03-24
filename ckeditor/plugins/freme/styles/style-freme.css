@@ -4,6 +4,8 @@
 
 [its-ta-ident-ref] {
     background-color: moccasin;
+    text-decoration: underline;
+    cursor: pointer;
 }
 
 .freme-dl dt {
