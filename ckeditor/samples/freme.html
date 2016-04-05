@@ -37,6 +37,43 @@ For licensing, see LICENSE.md or http://ckeditor.com/license
         table.dataTable tr td:nth-of-type(3) {
             min-width: 128px;
         }
+
+        .override .viewbox {
+            white-space: normal;
+            word-break: break-all;
+            word-break: break-word;
+            max-height: 60vh;
+            overflow: auto;
+        }
+
+        .override .col-md-4 {
+            display: inline-block;
+            width: 33.333%;
+            vertical-align: top;
+            overflow: auto;
+            height: 100%;
+        }
+
+        .override .col-md-8 {
+            display: inline-block;
+            width: 66.666%;
+            vertical-align: top;
+            overflow: auto;
+            height: 100%;
+        }
+
+        .override .general-radio {
+            margin-top: 16px !important;
+        }
+
+        .override .general-radio ul {
+            max-height: 30vh;
+            overflow: auto;
+        }
+
+        .right {
+            float: right !important;
+        }
     </style>
     <!-- /DATATABLES -->
     <link rel="stylesheet" href="css/samples.css">
@@ -61,14 +98,10 @@ For licensing, see LICENSE.md or http://ckeditor.com/license
         <div class="grid-container">
             <div class="grid-width-100">
                 <textarea title="editor1" id="editor1" cols="10" rows="10">
-&lt;h1&gt;Ai Weiwei&lt;/h1&gt;
 &lt;p&gt;Dissident Chinese artist Ai Weiwei has been refused a six-month visa by the British government amid claims he lied on his visa application form.
  Ai posted a letter on Instagram stating his entry to the UK had been restricted because he failed to declare his "criminal conviction".
  But Ai, though detained in China for 81 days in 2011, has never been charged or convicted of a crime in China.
  The artist was granted a 20-day visa to attend the opening of his London show.&lt;/p&gt;
- &lt;p&gt;However, it may mean he cannot supervise the installation of the landmark solo exhibition at the Royal Academy of Arts which has a private preview on 15 September.
- The letter, from the visa section of the British Embassy in Beijing, stated Ai's entry to the UK "has been restricted to the requested dates of travel... because you have failed to meet the business visitor rules".
-&lt;/p&gt;
                 </textarea>
             </div>
         </div>
