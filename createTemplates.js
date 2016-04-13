@@ -7,7 +7,7 @@ var fs = require('fs'),
     async = require('async'),
     request = require('request');
 
-var fremeBase = 'http://api-dev.freme-project.eu/current/';
+var fremeBase = 'http://api.freme-project.eu/0.5/';
 var authName = 'bjdmeest',
     authPass = 'fremefreme';
 
@@ -38,6 +38,7 @@ request({
             }
         },
         function (err, res, templates) {
+            // TODO check if has properties: create sparql.
             templates = JSON.parse(templates);
             var exists = {};
             for (var i = 0; i < templates.length; i++) {
@@ -46,9 +47,10 @@ request({
             var templateBaseDir = path.resolve(__dirname, './templates');
             fs.readdir(templateBaseDir, function (err, files) {
                 async.mapLimit(files, 4, function (file, done) {
-                    if (file.indexOf('.txt') === -1) {
+                    if (file.indexOf('.txt') === -1 || file.indexOf('everything') === -1) {
                         return done();
                     }
+                    console.log(file);
 
                     async.map([path.resolve(templateBaseDir, file), path.resolve(templateBaseDir, file.replace('.txt', '.json'))], function (file, readDone) {
                         fs.readFile(file, 'utf8', readDone);

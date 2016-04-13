@@ -75,7 +75,7 @@ CKEDITOR.dialog.add('fremeLinkDialog', function (editor) {
             ["total population", "http://dbpedia.org/ontology/populationTotal"]
         ]
     };
-    var allTemplate = 4457;
+    var allTemplate = 4477;
     var resourceData = {};
     var typeElements = [];
     var resourceElements = [];
@@ -154,54 +154,57 @@ CKEDITOR.dialog.add('fremeLinkDialog', function (editor) {
             var $typeRadio = $(dialog.getContentElement('tab-main', 'contentbox').getElement().$).find('div.type-radio');
             var $generalRadio = $(dialog.getContentElement('tab-main', 'contentbox').getElement().$).find('div.general-radio');
             placeCaretAfterIdentRef(editor);
-            explore(resource, 'http://dbpedia.org/sparql', function (err, results) { // TODO do with template
-                resourceData = results;
-                typeElements = [];
-                resourceElements = [];
-                var i;
-                if (typeProperties[type]) {
-                    for (i = 0; i < typeProperties[type].length; i++) {
-                        if (resourceData[typeProperties[type][i][1]]) {
-                            typeElements.push(typeProperties[type][i]);
-                        }
-                    }
-                    typeElements.sort(function (a, b) {
-                        return a[0] < b[0];
-                    });
-                    $typeRadio.empty();
-                    var $ul = $('<ul></ul>');
-                    $typeRadio.append($ul);
-                    for (i = 0; i < typeElements.length; i++) {
-                        var $li = $('<li data-url="' + typeElements[i][1] + '">' + typeElements[i][0] + '</li>');
-                        $ul.append($li);
-                    }
-                    $ul.find('li').on('click', function () {
-                        updateView(dialog, $(this).attr('data-url'));
-                    });
-                    $typeRadio.css('display', 'block');
-                }
-                $generalRadio.empty();
-                var $gUl = $('<ul></ul>');
-                $generalRadio.append($gUl);
-                for (var key in resourceData) {
-                    if (resourceData.hasOwnProperty(key)) {
-                        if (key.indexOf('http') !== 0) {
-                            continue;
-                        }
-                        var $gLi = $('<li data-url="' + key + '">' + key + '</li>'); // TODO key.label
-                        $gUl.append($gLi);
-                    }
-                }
-                $gUl.find('li').on('click', function () {
-                    updateView(dialog, $(this).attr('data-url'));
-                });
-                $(dialog.getContentElement('tab-main', 'contentbox').getElement().$).find('button.btn-insert-o').on('click', function() {
-                    insertInEditor();
-                });
-                dialog.showPage('tab-main');
-                dialog.selectPage('tab-main');
-                dialog.hidePage('tab-spinner');
+            doTemplate(resource, allTemplate, function(err, results) {
+                var omg = 12;
             });
+            // explore(resource, 'http://dbpedia.org/sparql', function (err, results) { // TODO do with template
+            //     resourceData = results;
+            //     typeElements = [];
+            //     resourceElements = [];
+            //     var i;
+            //     if (typeProperties[type]) {
+            //         for (i = 0; i < typeProperties[type].length; i++) {
+            //             if (resourceData[typeProperties[type][i][1]]) {
+            //                 typeElements.push(typeProperties[type][i]);
+            //             }
+            //         }
+            //         typeElements.sort(function (a, b) {
+            //             return a[0] < b[0];
+            //         });
+            //         $typeRadio.empty();
+            //         var $ul = $('<ul></ul>');
+            //         $typeRadio.append($ul);
+            //         for (i = 0; i < typeElements.length; i++) {
+            //             var $li = $('<li data-url="' + typeElements[i][1] + '">' + typeElements[i][0] + '</li>');
+            //             $ul.append($li);
+            //         }
+            //         $ul.find('li').on('click', function () {
+            //             updateView(dialog, $(this).attr('data-url'));
+            //         });
+            //         $typeRadio.css('display', 'block');
+            //     }
+            //     $generalRadio.empty();
+            //     var $gUl = $('<ul></ul>');
+            //     $generalRadio.append($gUl);
+            //     for (var key in resourceData) {
+            //         if (resourceData.hasOwnProperty(key)) {
+            //             if (key.indexOf('http') !== 0) {
+            //                 continue;
+            //             }
+            //             var $gLi = $('<li data-url="' + key + '">' + key + '</li>'); // TODO key.label
+            //             $gUl.append($gLi);
+            //         }
+            //     }
+            //     $gUl.find('li').on('click', function () {
+            //         updateView(dialog, $(this).attr('data-url'));
+            //     });
+            //     $(dialog.getContentElement('tab-main', 'contentbox').getElement().$).find('button.btn-insert-o').on('click', function() {
+            //         insertInEditor();
+            //     });
+            //     dialog.showPage('tab-main');
+            //     dialog.selectPage('tab-main');
+            //     dialog.hidePage('tab-spinner');
+            // });
         }
     };
 
@@ -317,7 +320,7 @@ CKEDITOR.dialog.add('fremeLinkDialog', function (editor) {
 
     function doTemplate(entity, templateId, cb) {
         var turtle = '_:d1 <http://www.w3.org/2005/11/its/rdf#taIdentRef> <' + entity + '>';
-        doRequest('POST', 'http://api-dev.freme-project.eu/current/e-link/documents/?informat=turtle&outformat=json-ld&templateid=' + templateId, turtle, {
+        doRequest('POST', 'http://api-dev.freme-project.eu/0.5/e-link/documents/?informat=turtle&outformat=json-ld&templateid=' + templateId, turtle, {
             'Content-Type': 'text/turtle',
             Accept: 'application/ld+json'
         }, function (results) {
