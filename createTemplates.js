@@ -7,7 +7,7 @@ var fs = require('fs'),
     async = require('async'),
     request = require('request');
 
-var fremeBase = 'http://api.freme-project.eu/0.5/';
+var fremeBase = 'http://api.freme-project.eu/0.4/';
 var authName = 'bjdmeest',
     authPass = 'fremefreme';
 

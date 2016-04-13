@@ -320,7 +320,7 @@ CKEDITOR.dialog.add('fremeLinkDialog', function (editor) {
 
     function doTemplate(entity, templateId, cb) {
         var turtle = '_:d1 <http://www.w3.org/2005/11/its/rdf#taIdentRef> <' + entity + '>';
-        doRequest('POST', 'http://api-dev.freme-project.eu/0.5/e-link/documents/?informat=turtle&outformat=json-ld&templateid=' + templateId, turtle, {
+        doRequest('POST', 'http://api-dev.freme-project.eu/0.4/e-link/documents/?informat=turtle&outformat=json-ld&templateid=' + templateId, turtle, {
             'Content-Type': 'text/turtle',
             Accept: 'application/ld+json'
         }, function (results) {
