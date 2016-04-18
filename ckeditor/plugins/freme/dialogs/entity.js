@@ -140,6 +140,7 @@ CKEDITOR.dialog.add('fremeEntityDialog', function (editor) {
                     link($el.html(), lang, dataset, function (err, html) {
                         todo--;
                         if (err) {
+                            eEntityNot.update({type: 'warning', message: 'Detection could not be executed!'});
                             return console.log(err);
                         }
                         node.setHtml(html);
