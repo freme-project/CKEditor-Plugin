@@ -11,21 +11,21 @@ var fremeBase = 'http://api.freme-project.eu/current/';
 var authName = 'bjdmeest',
     authPass = 'fremefreme';
 
-request({
-    url: fremeBase + 'authenticate',
-    method: 'POST',
-    headers: {
-        'Content-Type': 'text/plain',
-        Accept: 'application/json',
-        'X-Auth-Username': authName,
-        'X-Auth-Password': authPass
-    }
-}, function (err, res, body) {
-    body = JSON.parse(body);
-    if (!body.token && body.status !== 200) {
-        throw new Error(body.message);
-    }
-    var token = body.token;
+// request({
+//     url: fremeBase + 'authenticate',
+//     method: 'POST',
+//     headers: {
+//         'Content-Type': 'text/plain',
+//         Accept: 'application/json',
+//         'X-Auth-Username': authName,
+//         'X-Auth-Password': authPass
+//     }
+// }, function (err, res, body) {
+//     body = JSON.parse(body);
+//     if (!body.token && body.status !== 200) {
+//         throw new Error(body.message);
+//     }
+    var token = '0c87f536-69bf-4d25-adae-bb9ec9330390'; //body.token;
 
     request({
             url: fremeBase + 'e-link/templates/',
@@ -91,4 +91,4 @@ request({
                 });
             });
         });
-});
+// });
