@@ -19,6 +19,17 @@ CKEDITOR.dialog.add('fremeLinkDialog', function (editor) {
                 'http://nerd.eurecom.fr/ontology#Person': 'Person',
                 'http://nerd.eurecom.fr/ontology#Location': 'Location',
                 'http://dbpedia.org/ontology/Location': 'Location',
+                'http://www.georss.org/georss/point': 'geo point',
+                'http://www.w3.org/2000/01/rdf-schema#seeAlso': 'see also',
+                'http://xmlns.com/foaf/0.1/name': 'name',
+                'http://www.w3.org/2003/01/geo/wgs84_pos#geometry': 'geometry',
+                'http://www.w3.org/2003/01/geo/wgs84_pos#lat': 'latitude',
+                'http://www.w3.org/2003/01/geo/wgs84_pos#long': 'longitude',
+                'http://www.w3.org/ns/prov#wasDerivedFrom': 'was derived from',
+                'http://dbpedia.org/property/languages': 'languages',
+                'http://xmlns.com/foaf/0.1/depiction': 'depiction',
+                'http://xmlns.com/foaf/0.1/isPrimaryTopicOf': 'is primary topic of',
+                'http://dbpedia.org/property/imageFlag': 'image flag',
                 'http://www.w3.org/2000/01/rdf-schema#comment': 'comment'
             }
         },
@@ -76,9 +87,7 @@ CKEDITOR.dialog.add('fremeLinkDialog', function (editor) {
         ]
     };
     var allTemplate = 4477;
-    var resourceData = {};
     var typeElements = [];
-    var resourceElements = [];
     var currentInsertingEl = null;
 
     function doRequest(method, url, data, headers, success, error) {
@@ -154,66 +163,171 @@ CKEDITOR.dialog.add('fremeLinkDialog', function (editor) {
             var $typeRadio = $(dialog.getContentElement('tab-main', 'contentbox').getElement().$).find('div.type-radio');
             var $generalRadio = $(dialog.getContentElement('tab-main', 'contentbox').getElement().$).find('div.general-radio');
             placeCaretAfterIdentRef(editor);
-            // doTemplate(resource, allTemplate, function(err, results) {
-            //     var omg = 12;
-            // });
-            explore(resource, 'http://dbpedia.org/sparql', function (err, results) { // TODO do with template
-                resourceData = results;
+            doTemplate(resource, allTemplate, function (err, results) {
+                results = removeContext(results);
+                var niceResults = {};
+                for (var i = 0; i < results['@graph'].length; i++) {
+                    niceResults[results['@graph'][i]['@id']] = results['@graph'][i];
+                }
+                var resourceData = niceResults[resource];
                 typeElements = [];
-                resourceElements = [];
-                var i;
                 if (typeProperties[type]) {
                     for (i = 0; i < typeProperties[type].length; i++) {
                         if (resourceData[typeProperties[type][i][1]]) {
-                            typeElements.push(typeProperties[type][i]);
+                            typeElements.push(typeProperties[type][i][1]);
                         }
                     }
                     typeElements.sort(function (a, b) {
-                        return a[0] < b[0];
+                        return getLabelLD(niceResults, a) < getLabelLD(niceResults, b);
                     });
                     $typeRadio.empty();
                     var $ul = $('<ul></ul>');
                     $typeRadio.append($ul);
                     for (i = 0; i < typeElements.length; i++) {
-                        var $li = $('<li data-url="' + typeElements[i][1] + '">' + typeElements[i][0] + '</li>');
+                        var $li = $('<li data-url="' + typeElements[i] + '">' + getLabelLD(niceResults, typeElements[i]) + '</li>');
                         $ul.append($li);
                     }
                     $ul.find('li').on('click', function () {
-                        updateView(dialog, $(this).attr('data-url'));
+                        updateView(dialog, niceResults, $(this).attr('data-url'), resourceData[$(this).attr('data-url')]);
                     });
                     $typeRadio.css('display', 'block');
                 }
                 $generalRadio.empty();
                 var $gUl = $('<ul></ul>');
                 $generalRadio.append($gUl);
+                var lis = [];
                 for (var key in resourceData) {
                     if (resourceData.hasOwnProperty(key)) {
                         if (key.indexOf('http') !== 0) {
                             continue;
                         }
-                        var $gLi = $('<li data-url="' + key + '">' + key + '</li>'); // TODO key.label
-                        $gUl.append($gLi);
+                        var $gLi = $('<li data-url="' + key + '">' + getLabelLD(niceResults, key) + '</li>');
+                        lis.push($gLi);
+
                     }
                 }
-                $gUl.find('li').on('click', function () {
-                    updateView(dialog, $(this).attr('data-url'));
+                lis.sort(function (a, b) {
+                    return a.text().toLowerCase() > b.text().toLowerCase();
                 });
-                $(dialog.getContentElement('tab-main', 'contentbox').getElement().$).find('button.btn-insert-o').on('click', function() {
+                for (i = 0; i < lis.length; i++) {
+                    $gUl.append(lis[i]);
+                }
+                $gUl.find('li').on('click', function () {
+                    updateView(dialog, niceResults, $(this).attr('data-url'), resourceData[$(this).attr('data-url')]);
+                });
+                $(dialog.getContentElement('tab-main', 'contentbox').getElement().$).find('button.btn-insert-o').on('click', function () {
                     insertInEditor();
                 });
                 dialog.showPage('tab-main');
                 dialog.selectPage('tab-main');
                 dialog.hidePage('tab-spinner');
+
+                var omg = 12;
             });
+            // explore(resource, 'http://dbpedia.org/sparql', function (err, results) { // TODO do with template
+            //     resourceData = results;
+            //     typeElements = [];
+            //     resourceElements = [];
+            //     var i;
+            //     if (typeProperties[type]) {
+            //         for (i = 0; i < typeProperties[type].length; i++) {
+            //             if (resourceData[typeProperties[type][i][1]]) {
+            //                 typeElements.push(typeProperties[type][i]);
+            //             }
+            //         }
+            //         typeElements.sort(function (a, b) {
+            //             return a[0] < b[0];
+            //         });
+            //         $typeRadio.empty();
+            //         var $ul = $('<ul></ul>');
+            //         $typeRadio.append($ul);
+            //         for (i = 0; i < typeElements.length; i++) {
+            //             var $li = $('<li data-url="' + typeElements[i][1] + '">' + typeElements[i][0] + '</li>');
+            //             $ul.append($li);
+            //         }
+            //         $ul.find('li').on('click', function () {
+            //             updateView(dialog, $(this).attr('data-url'));
+            //         });
+            //         $typeRadio.css('display', 'block');
+            //     }
+            //     $generalRadio.empty();
+            //     var $gUl = $('<ul></ul>');
+            //     $generalRadio.append($gUl);
+            //     for (var key in resourceData) {
+            //         if (resourceData.hasOwnProperty(key)) {
+            //             if (key.indexOf('http') !== 0) {
+            //                 continue;
+            //             }
+            //             var $gLi = $('<li data-url="' + key + '">' + key + '</li>'); // TODO key.label
+            //             $gUl.append($gLi);
+            //         }
+            //     }
+            //     $gUl.find('li').on('click', function () {
+            //         updateView(dialog, $(this).attr('data-url'));
+            //     });
+            //     $(dialog.getContentElement('tab-main', 'contentbox').getElement().$).find('button.btn-insert-o').on('click', function() {
+            //         insertInEditor();
+            //     });
+            //     dialog.showPage('tab-main');
+            //     dialog.selectPage('tab-main');
+            //     dialog.hidePage('tab-spinner');
+            // });
         }
     };
 
-    function updateView(dialog, predicate) {
+    function getLabelLD(results, resource, lang) {
+        lang = lang || 'en';
+        if (!results[resource] || !results[resource]['http://www.w3.org/2000/01/rdf-schema#label']) {
+            if (labelBase.labels[lang] && labelBase.labels[lang][resource]) {
+                return labelBase.labels[lang][resource];
+            }
+            return resource;
+        }
+        var labels = results[resource]['http://www.w3.org/2000/01/rdf-schema#label'];
+        if (Object.prototype.toString.call(labels) !== '[object Array]') {
+            return labels['@value'];
+        }
+        else {
+            for (var i = 0; i < labels.length; i++) {
+                if (labels[i]['@language'] === lang) {
+                    return labels[i]['@value']
+                }
+            }
+        }
+        return labels[0]['@value'];
+    }
+
+    function updateView(dialog, results, predicate, data) {
+        var txt = '';
+        var html = '';
+        if (Object.prototype.toString.call(data) === '[object Array]') {
+            var els = [];
+            for (var i = 0; i < data.length; i++) {
+                els.push(getValueLabel(data[i]));
+            }
+            txt = els.join(', ');
+            html = '<ul><li>' + els.join('</li><li>') + '</li></ul>';
+        }
+        else {
+            txt = html = getValueLabel(data);
+        }
         currentInsertingEl = {
             type: 'text',
-            value: JSON.stringify(resourceData[predicate])
+            value: txt
         };
-        $(dialog.getContentElement('tab-main', 'contentbox').getElement().$).find('div.viewbox').html(JSON.stringify(resourceData[predicate]));
+        $(dialog.getContentElement('tab-main', 'contentbox').getElement().$).find('div.viewbox').html(html);
+
+        function getValueLabel(el) {
+            if (el['@value']) {
+                return getLabelLD(results, el['@value']);
+            }
+            else if (el['@id']) {
+                return getLabelLD(results, el['@id']);
+            }
+            else {
+                return getLabelLD(results, el);
+            }
+        }
     }
 
     function insertInEditor() {
@@ -320,7 +434,7 @@ CKEDITOR.dialog.add('fremeLinkDialog', function (editor) {
 
     function doTemplate(entity, templateId, cb) {
         var turtle = '_:d1 <http://www.w3.org/2005/11/its/rdf#taIdentRef> <' + entity + '>';
-        doRequest('POST', 'http://api-dev.freme-project.eu/current/e-link/documents/?informat=turtle&outformat=json-ld&templateid=' + templateId, turtle, {
+        doRequest('POST', 'http://api.freme-project.eu/current/e-link/documents/?informat=turtle&outformat=json-ld&templateid=' + templateId, turtle, {
             'Content-Type': 'text/turtle',
             Accept: 'application/ld+json'
         }, function (results) {
