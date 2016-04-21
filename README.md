@@ -2,9 +2,10 @@
 
 ## install
 
-* download ckeditor from [here](http://ckeditor.com/download)
+* download ckeditor from [here](http://ckeditor.com/download) (^4.5.X)
 * unzip (root should be the same as the `ckeditor` folder in this root)
 * also, download the plugin `notification`, and unzip it to the `plugins/` folder
+* make sure the ckeditor is loaded with jquery and the jquery adapter (see `ckeditor/samples/freme.html` for an example)
 * check out `ckeditor/samples/freme.html`, it's awesome!
 
 ## License
