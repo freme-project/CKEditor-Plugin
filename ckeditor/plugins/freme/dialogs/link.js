@@ -224,54 +224,6 @@ CKEDITOR.dialog.add('fremeLinkDialog', function (editor) {
 
                 var omg = 12;
             });
-            // explore(resource, 'http://dbpedia.org/sparql', function (err, results) { // TODO do with template
-            //     resourceData = results;
-            //     typeElements = [];
-            //     resourceElements = [];
-            //     var i;
-            //     if (typeProperties[type]) {
-            //         for (i = 0; i < typeProperties[type].length; i++) {
-            //             if (resourceData[typeProperties[type][i][1]]) {
-            //                 typeElements.push(typeProperties[type][i]);
-            //             }
-            //         }
-            //         typeElements.sort(function (a, b) {
-            //             return a[0] < b[0];
-            //         });
-            //         $typeRadio.empty();
-            //         var $ul = $('<ul></ul>');
-            //         $typeRadio.append($ul);
-            //         for (i = 0; i < typeElements.length; i++) {
-            //             var $li = $('<li data-url="' + typeElements[i][1] + '">' + typeElements[i][0] + '</li>');
-            //             $ul.append($li);
-            //         }
-            //         $ul.find('li').on('click', function () {
-            //             updateView(dialog, $(this).attr('data-url'));
-            //         });
-            //         $typeRadio.css('display', 'block');
-            //     }
-            //     $generalRadio.empty();
-            //     var $gUl = $('<ul></ul>');
-            //     $generalRadio.append($gUl);
-            //     for (var key in resourceData) {
-            //         if (resourceData.hasOwnProperty(key)) {
-            //             if (key.indexOf('http') !== 0) {
-            //                 continue;
-            //             }
-            //             var $gLi = $('<li data-url="' + key + '">' + key + '</li>'); // TODO key.label
-            //             $gUl.append($gLi);
-            //         }
-            //     }
-            //     $gUl.find('li').on('click', function () {
-            //         updateView(dialog, $(this).attr('data-url'));
-            //     });
-            //     $(dialog.getContentElement('tab-main', 'contentbox').getElement().$).find('button.btn-insert-o').on('click', function() {
-            //         insertInEditor();
-            //     });
-            //     dialog.showPage('tab-main');
-            //     dialog.selectPage('tab-main');
-            //     dialog.hidePage('tab-spinner');
-            // });
         }
     };
 
@@ -301,6 +253,7 @@ CKEDITOR.dialog.add('fremeLinkDialog', function (editor) {
         var txt = '';
         var html = '';
         if (Object.prototype.toString.call(data) === '[object Array]') {
+            // TODO do tabs
             var els = [];
             for (var i = 0; i < data.length; i++) {
                 els.push(getValueLabel(data[i]));
