@@ -3,6 +3,11 @@
  */
 CKEDITOR.plugins.add('freme', {
     init: function (editor) {
+        var $ = window.$ || window.jQuery;
+
+        if (!$) {
+            editor.showNotification('jQuery not found!', 'warning');
+        }
         editor.addContentsCss(this.path + '/styles/style-freme.css');
 
         editor.addCommand('fremeTranslate', new CKEDITOR.dialogCommand('fremeTranslateDialog'));

@@ -2,6 +2,12 @@
  * Created by bjdmeest on 4/12/2015.
  */
 CKEDITOR.dialog.add('fremeEntityDialog', function (editor) {
+    var $ = window.$ || window.jQuery;
+
+    if (!$) {
+        editor.showNotification('jQuery not found!', 'warning');
+    }
+
     var langs = [['Dutch', 'NL'], ['English', 'EN'], ['French ', 'FR'], ['German ', 'DE'], ['Italian ', 'IT'], ['Spanish ', 'ES']];
     var datasetsJSON = [
         {

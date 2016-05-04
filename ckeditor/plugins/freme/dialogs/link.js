@@ -2,7 +2,11 @@
  * Created by bjdmeest on 4/12/2015.
  */
 CKEDITOR.dialog.add('fremeLinkDialog', function (editor) {
+    var $ = window.$ || window.jQuery;
 
+    if (!$) {
+        editor.showNotification('jQuery not found!', 'warning');
+    }
     var endpointTypes = {
         'http://dbpedia.org/sparql': 'sparql'
     };
