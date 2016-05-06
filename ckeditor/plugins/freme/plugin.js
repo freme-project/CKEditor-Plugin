@@ -5,16 +5,18 @@ CKEDITOR.plugins.add('freme', {
     init: function (editor) {
         var $ = window.$ || window.jQuery;
 
+        console.log(this.path);
+
         if (!$) {
             editor.showNotification('jQuery not found!', 'warning');
         }
-        editor.addContentsCss(this.path + '/styles/style-freme.css');
+        editor.addContentsCss(this.path + 'styles/style-freme.css');
 
         editor.addCommand('fremeTranslate', new CKEDITOR.dialogCommand('fremeTranslateDialog'));
         editor.ui.addButton('FremeTranslate', {
             label: 'Translate',
             command: 'fremeTranslate',
-            icon: this.path + '/icons/fremeTranslate.png',
+            icon: this.path + 'icons/fremeTranslate.png',
             toolbar: 'freme'
         });
 
@@ -24,7 +26,7 @@ CKEDITOR.plugins.add('freme', {
         editor.ui.addButton('FremeEntity', {
             label: 'Detect concepts',
             command: 'fremeEntity',
-            icon: this.path + '/icons/fremeEntity.png',
+            icon: this.path + 'icons/fremeEntity.png',
             toolbar: 'freme'
         });
 
@@ -34,7 +36,7 @@ CKEDITOR.plugins.add('freme', {
         editor.ui.addButton('FremeLink', {
             label: 'Get additional info',
             command: 'fremeLink',
-            icon: this.path + '/icons/fremeLink.png',
+            icon: this.path + 'icons/fremeLink.png',
             toolbar: 'freme'
         });
 
