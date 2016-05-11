@@ -477,7 +477,7 @@ CKEDITOR.dialog.add('fremeLinkDialog', function (editor) {
     };
 
     function explore(url, endpoint, cb) {
-        doRequest('POST', 'http://api.freme-project.eu/current/e-link/explore?resource=' + encodeURIComponent(url) + '&endpoint=' + encodeURIComponent(endpoint) + '&endpoint-type=' + endpointTypes[endpoint], null, {
+        doRequest('POST', 'http://api-dev.freme-project.eu/current/e-link/explore?resource=' + encodeURIComponent(url) + '&endpoint=' + encodeURIComponent(endpoint) + '&endpoint-type=' + endpointTypes[endpoint], null, {
             'Content-Type': 'application/json',
             'Accept': 'application/ld+json'
         }, function (results) {
