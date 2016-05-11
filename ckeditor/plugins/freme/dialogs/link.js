@@ -367,7 +367,7 @@ CKEDITOR.dialog.add('fremeLinkDialog', function (editor) {
             "endpointType": "SPARQL"
         }
     ];
-    var templates = [['Basic person info (dbpedia)', 4458], ['Basic location info (dbpedia)', 4459], ['Everything with labels (dbpedia)', 4457]];
+    var templates = [['Basic person info (dbpedia)', 4480], ['Basic location info (dbpedia)', 4481], ['Everything with labels (dbpedia)', 4477]];
     var labels = {
         'en': {
             '@id': 'entity url',
@@ -477,7 +477,7 @@ CKEDITOR.dialog.add('fremeLinkDialog', function (editor) {
     };
 
     function explore(url, endpoint, cb) {
-        doRequest('POST', 'http://api.freme-project.eu/current/e-link/explore?resource=' + encodeURIComponent(url) + '&endpoint=' + encodeURIComponent(endpoint) + '&endpoint-type=' + endpointTypes[endpoint], null, {
+        doRequest('POST', 'http://api.freme-project.eu/0.6/e-link/explore?resource=' + encodeURIComponent(url) + '&endpoint=' + encodeURIComponent(endpoint) + '&endpoint-type=' + endpointTypes[endpoint], null, {
             'Content-Type': 'application/json',
             'Accept': 'application/ld+json'
         }, function (results) {
@@ -489,7 +489,7 @@ CKEDITOR.dialog.add('fremeLinkDialog', function (editor) {
 
     function doTemplate(entity, templateId, cb) {
         var turtle = '_:d1 <http://www.w3.org/2005/11/its/rdf#taIdentRef> <' + entity + '>';
-        doRequest('POST', 'http://api-dev.freme-project.eu/current/e-link/documents/?informat=turtle&outformat=json-ld&templateid=' + templateId, turtle, {
+        doRequest('POST', 'http://api.freme-project.eu/0.6/e-link/documents/?informat=turtle&outformat=json-ld&templateid=' + templateId, turtle, {
             'Content-Type': 'text/turtle',
             Accept: 'application/ld+json'
         }, function (results) {

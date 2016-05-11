@@ -8,7 +8,7 @@ CKEDITOR.dialog.add('fremeEntityDialog', function (editor) {
         editor.showNotification('jQuery not found!', 'warning');
     }
 
-    var langs = [['Dutch', 'NL'], ['English', 'EN'], ['French ', 'FR'], ['German ', 'DE'], ['Italian ', 'IT'], ['Spanish ', 'ES']];
+    var langs = [['Dutch', 'NL'], ['English', 'EN'], ['French ', 'FR'], ['German ', 'DE'], ['Italian ', 'IT'], ['Spanish ', 'ES'], ['Russian ', 'RU']];
     var datasetsJSON = [
         {
             "Name": "dbpedia",
@@ -55,7 +55,7 @@ CKEDITOR.dialog.add('fremeEntityDialog', function (editor) {
 
     function link(sourceText, lang, dataset, cb) {
         doRequest('POST',
-            'http://api.freme-project.eu/current/e-entity/freme-ner/documents?informat=text%2Fhtml&outformat=text%2Fhtml&language=' + lang.toLowerCase() + '&dataset=' + dataset + '&mode=all',
+            'http://api.freme-project.eu/0.6/e-entity/freme-ner/documents?informat=text%2Fhtml&outformat=text%2Fhtml&language=' + lang.toLowerCase() + '&dataset=' + dataset + '&mode=all',
             '<p>' + sourceText + '</p>',
             {'Content-Type': 'text/html', Accept: 'text/n3'},
             function (results) {
