@@ -4,6 +4,8 @@
 CKEDITOR.dialog.add('fremeEntityDialog', function (editor) {
     var $ = window.$ || window.jQuery;
 
+    var fremeEndpoint = 'http://api-dev.freme-project.eu/current/';
+
     if (!$) {
         editor.showNotification('jQuery not found!', 'warning');
     }
@@ -55,7 +57,7 @@ CKEDITOR.dialog.add('fremeEntityDialog', function (editor) {
 
     function link(sourceText, lang, dataset, cb) {
         doRequest('POST',
-            'http://api.freme-project.eu/current/e-entity/freme-ner/documents?informat=text%2Fhtml&outformat=text%2Fhtml&language=' + lang.toLowerCase() + '&dataset=' + dataset + '&mode=all',
+            fremeEndpoint + 'e-entity/freme-ner/documents?informat=text%2Fhtml&outformat=text%2Fhtml&language=' + lang.toLowerCase() + '&dataset=' + dataset + '&mode=all',
             '<p>' + sourceText + '</p>',
             {'Content-Type': 'text/html', Accept: 'text/n3'},
             function (results) {
