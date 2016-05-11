@@ -5,8 +5,6 @@ CKEDITOR.plugins.add('freme', {
     init: function (editor) {
         var $ = window.$ || window.jQuery;
 
-        console.log(this.path);
-
         if (!$) {
             editor.showNotification('jQuery not found!', 'warning');
         }
