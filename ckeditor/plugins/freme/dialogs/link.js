@@ -138,7 +138,7 @@ CKEDITOR.dialog.add('fremeLinkDialog', function (editor) {
 
     return {
         title: 'Information about <>',
-        minWidth: 400,
+        minWidth: 600,
         minHeight: 200,
         buttons: [CKEDITOR.dialog.okButton],
         contents: [
@@ -165,8 +165,9 @@ CKEDITOR.dialog.add('fremeLinkDialog', function (editor) {
                         html: '' +
                         '<div class="contentbox override">' +
                         '  <div class="row">' +
-                        '    <div class="col-md-4">' +
+                        '    <div class="col-md-4" id="contentbox-radios">' +
                         '      <div class="type-radio"></div>' +
+                        '      <hr style="border-bottom: 1px lightgrey solid;"/>' +
                         '      <div class="general-radio"></div>' +
                         '    </div>' +
                         '    <div class="col-md-8">' +
@@ -257,7 +258,10 @@ CKEDITOR.dialog.add('fremeLinkDialog', function (editor) {
                 dialog.selectPage('tab-main');
                 dialog.hidePage('tab-spinner');
 
-                var omg = 12;
+                $('#contentbox-radios').find('li').on('click', function () {
+                    $('#contentbox-radios').find('li').removeClass('active');
+                    $(this).addClass('active');
+                });
             });
         },
         onLoad: function () {
