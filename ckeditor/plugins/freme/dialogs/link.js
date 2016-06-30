@@ -394,7 +394,7 @@ CKEDITOR.dialog.add('fremeLinkDialog', function (editor) {
 
     function doRequest(method, url, data, headers, success, error) {
         $.ajax({
-                method: method,
+                type: method,
                 headers: headers,
                 data: data,
                 url: url
