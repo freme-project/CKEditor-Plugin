@@ -4,7 +4,7 @@
 CKEDITOR.dialog.add('fremeLinkDialog', function (editor) {
     var $ = window.$ || window.jQuery;
 
-    var fremeEndpoint = 'http://api-dev.freme-project.eu/current/';
+    var fremeEndpoint = 'http://api.freme-project.eu/0.6/';
 
     if (!$) {
         editor.showNotification('jQuery not found!', 'warning');

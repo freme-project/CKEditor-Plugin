@@ -4,13 +4,13 @@
 CKEDITOR.dialog.add('fremeEntityDialog', function (editor) {
     var $ = window.$ || window.jQuery;
 
-    var fremeEndpoint = 'http://api-dev.freme-project.eu/current/';
+    var fremeEndpoint = 'http://api.freme-project.eu/0.6/';
 
     if (!$) {
         editor.showNotification('jQuery not found!', 'warning');
     }
 
-    var langs = [['Dutch', 'NL'], ['English', 'EN'], ['French ', 'FR'], ['German ', 'DE'], ['Italian ', 'IT'], ['Spanish ', 'ES']];
+    var langs = [['Dutch', 'NL'], ['English', 'EN'], ['French', 'FR'], ['German', 'DE'], ['Italian', 'IT'], ['Spanish', 'ES'], ['Russian', 'RU']];
     var datasetsJSON = [
         {
             "Name": "dbpedia",
