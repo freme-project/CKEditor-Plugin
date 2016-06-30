@@ -10,13 +10,13 @@ CKEDITOR.dialog.add('fremeTranslateDialog', function (editor) {
     var inLangs = [['Dutch', 'NL'], ['English', 'EN']];
     var outLangs = {
         'NL': [['French ', 'FR'], ['German ', 'DE'], ['English', 'EN']],
-        'EN': [['Bulgarian ', 'BG'], ['Czech ', 'CS'], ['Danish ', 'DA'], ['Dutch', 'NL'], ['Finnish ', 'FI'], ['German ', 'DE'], ['Greek ', 'EL'], ['Hungarian', 'HU'], ['Italian ', 'IT'], ['Polish ', 'PL'], ['Portuguese ', 'PT'], ['Romanian ', 'RO'], ['Slovenian ', 'SL'], ['Swedish ', 'SV']]
+        'EN': [['Bulgarian ', 'BG'], ['Czech ', 'CS'], ['Danish ', 'DA'], ['Dutch', 'NL'], ['Finnish ', 'FI'], ['French', 'FR'], ['German ', 'DE'], ['Greek ', 'EL'], ['Hungarian', 'HU'], ['Italian ', 'IT'], ['Polish ', 'PL'], ['Portuguese ', 'PT'], ['Romanian ', 'RO'], ['Slovenian ', 'SL'], ['Swedish ', 'SV']]
     };
     var langDefault = ['EN', 'DE'];
 
     function translate(sourceText, sourceLang, targetLang, cb) {
         doRequest('POST',
-            'http://api.freme-project.eu/current/e-translation/tilde?informat=text&outformat=json-ld&source-lang=' + sourceLang.toLowerCase() + '&target-lang=' + targetLang.toLowerCase(),
+            'http://api.freme-project.eu/0.6/e-translation/tilde?informat=text&outformat=json-ld&source-lang=' + sourceLang.toLowerCase() + '&target-lang=' + targetLang.toLowerCase(),
             sourceText,
             {'Content-Type': 'text/plain', Accept: 'application/json+ld'},
             function (data) {
