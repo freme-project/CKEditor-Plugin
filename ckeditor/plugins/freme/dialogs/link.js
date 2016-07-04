@@ -121,7 +121,7 @@ CKEDITOR.dialog.add('fremeLinkDialog', function (editor) {
             ["total population", "http://dbpedia.org/ontology/populationTotal"]
         ]
     };
-    var allTemplate = 4457;
+    var allTemplate = 4477;
     var typeElements = [];
     var currentInsertingEl = null;
 
