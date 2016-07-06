@@ -3,21 +3,23 @@ CONSTRUCT {
     <http://dbpedia.org/resource/Barack_Obama> <http://dbpedia.org/property/name> ?name.
     <http://dbpedia.org/resource/Barack_Obama> <http://dbpedia.org/property/birthDate> ?birthDate.
     <http://dbpedia.org/resource/Barack_Obama> <http://dbpedia.org/property/birthPlace> ?birthPlace.
-    <http://dbpedia.org/resource/Barack_Obama> <http://dbpedia.org/property/children> ?children.
-    <http://dbpedia.org/resource/Barack_Obama> <http://dbpedia.org/property/spouse> ?spouse.
+    <http://dbpedia.org/resource/Barack_Obama> <http://dbpedia.org/property/nationality> ?nationality.
     <http://dbpedia.org/resource/Barack_Obama> <http://dbpedia.org/ontology/abstract> ?abstract.
     <http://dbpedia.org/resource/Barack_Obama> <http://dbpedia.org/ontology/tumbnail> ?picture.
-    <http://dbpedia.org/resource/Barack_Obama> <http://dbpedia.org/ontology/wikiPageExternalLink> ?link.
+    <http://dbpedia.org/resource/Barack_Obama> <http://purl.org/dc/terms/subject> ?subject.
+    <http://dbpedia.org/resource/Barack_Obama> <http://xmlns.com/foaf/0.1/homePage> ?homePage.
+    <http://dbpedia.org/resource/Barack_Obama> <http://xmlns.com/foaf/0.1/isPrimaryTopicOf> ?topic.
 
+    <http://www.w3.org/2000/01/rdf-schema#label> <http://www.w3.org/2000/01/rdf-schema#label> ?labelLabel.
     <http://dbpedia.org/property/name> <http://www.w3.org/2000/01/rdf-schema#label> ?labelName.
     <http://dbpedia.org/property/birthDate> <http://www.w3.org/2000/01/rdf-schema#label> ?labelBirthDate.
     <http://dbpedia.org/property/birthPlace> <http://www.w3.org/2000/01/rdf-schema#label> ?labelBirthPlace.
-    <http://dbpedia.org/property/children> <http://www.w3.org/2000/01/rdf-schema#label> ?labelChildren.
-    <http://dbpedia.org/property/spouse> <http://www.w3.org/2000/01/rdf-schema#label> ?labelSpouse.
+    <http://dbpedia.org/property/nationality> <http://www.w3.org/2000/01/rdf-schema#label> ?labelNationality.
     <http://dbpedia.org/ontology/abstract> <http://www.w3.org/2000/01/rdf-schema#label> ?labelAbstract.
     <http://dbpedia.org/ontology/thumbnail> <http://www.w3.org/2000/01/rdf-schema#label> ?labelPicture.
-    <http://dbpedia.org/ontology/wikiPageExternalLink> <http://www.w3.org/2000/01/rdf-schema#label> ?labelLink.
-    <http://www.w3.org/2000/01/rdf-schema#label> <http://www.w3.org/2000/01/rdf-schema#label> ?labelLabel.
+    <http://purl.org/dc/terms/subject> <http://www.w3.org/2000/01/rdf-schema#label> ?labelSubject.
+    <http://xmlns.com/foaf/0.1/homePage> <http://www.w3.org/2000/01/rdf-schema#label> ?labelHomePage.
+    <http://xmlns.com/foaf/0.1/isPrimaryTopicOf> <http://www.w3.org/2000/01/rdf-schema#label> ?labelTopic.
 } WHERE {
     {
         select * where {
@@ -70,22 +72,10 @@ CONSTRUCT {
     {
         select * where {
 
-            <http://dbpedia.org/resource/Barack_Obama> <http://dbpedia.org/property/children> ?children.
+            <http://dbpedia.org/resource/Barack_Obama> <http://dbpedia.org/property/nationality> ?nationality.
 
             OPTIONAL {
-                <http://dbpedia.org/property/children> <http://www.w3.org/2000/01/rdf-schema#label> ?labelChildren
-            }
-
-        }
-    }
-    UNION
-    {
-        select * where {
-
-            <http://dbpedia.org/resource/Barack_Obama> <http://dbpedia.org/property/spouse> ?spouse.
-
-            OPTIONAL {
-                <http://dbpedia.org/property/spouse> <http://www.w3.org/2000/01/rdf-schema#label> ?labelSpouse
+                <http://dbpedia.org/property/nationality> <http://www.w3.org/2000/01/rdf-schema#label> ?labelNationality
             }
 
         }
@@ -118,10 +108,34 @@ CONSTRUCT {
     {
         select * where {
 
-            <http://dbpedia.org/resource/Barack_Obama> <http://dbpedia.org/ontology/wikiPageExternalLink> ?link.
+            <http://dbpedia.org/resource/Barack_Obama> <http://purl.org/dc/terms/subject> ?subject.
 
             OPTIONAL {
-                <http://dbpedia.org/ontology/wikiPageExternalLink> <http://www.w3.org/2000/01/rdf-schema#label> ?labelLink
+                <http://purl.org/dc/terms/subject> <http://www.w3.org/2000/01/rdf-schema#label> ?labelSubject
+            }
+
+        }
+    }
+    UNION
+    {
+        select * where {
+
+            <http://dbpedia.org/resource/Barack_Obama> <http://xmlns.com/foaf/0.1/homePage> ?homePage.
+
+            OPTIONAL {
+                <http://xmlns.com/foaf/0.1/homePage> <http://www.w3.org/2000/01/rdf-schema#label> ?labelHomePage
+            }
+
+        }
+    }
+    UNION
+    {
+        select * where {
+
+            <http://dbpedia.org/resource/Barack_Obama> <http://xmlns.com/foaf/0.1/isPrimaryTopicOf> ?topic.
+
+            OPTIONAL {
+                <http://xmlns.com/foaf/0.1/isPrimaryTopicOf> <http://www.w3.org/2000/01/rdf-schema#label> ?labelTopic
             }
 
         }

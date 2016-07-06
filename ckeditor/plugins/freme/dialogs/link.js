@@ -367,7 +367,7 @@ CKEDITOR.dialog.add('fremeLinkDialog', function (editor) {
             "endpointType": "SPARQL"
         }
     ];
-    var templates = [['Basic person info (dbpedia)', 4480], ['Basic location info (dbpedia)', 4481], ['Everything with labels (dbpedia)', 4477]];
+    var templates = [['Basic person info (dbpedia)', 4483], ['Basic location info (dbpedia)', 4484], ['Everything with labels (dbpedia)', 4477]];
     var labels = {
         'en': {
             '@id': 'entity url',

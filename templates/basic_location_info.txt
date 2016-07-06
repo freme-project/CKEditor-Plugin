@@ -2,96 +2,20 @@ PREFIX dbo: <http://dbpedia.org/ontology/>
 PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
 
 CONSTRUCT {
-    <http://dbpedia.org/resource/Paris> <http://www.w3.org/2000/01/rdf-schema#label> ?label.
-    <http://dbpedia.org/resource/Paris> dbo:country ?country.
-    <http://dbpedia.org/resource/Paris> dbo:mayor ?mayor.
-    <http://dbpedia.org/resource/Paris> dbo:populationTotal ?populationTotal.
-    <http://dbpedia.org/resource/Paris> geo:long ?long.
-    <http://dbpedia.org/resource/Paris> geo:lat ?lat.
     <http://dbpedia.org/resource/Paris> <http://dbpedia.org/ontology/abstract> ?abstract.
     <http://dbpedia.org/resource/Paris> <http://dbpedia.org/ontology/tumbnail> ?picture.
+    <http://dbpedia.org/resource/Paris> <http://purl.org/dc/terms/subject> ?subject.
+    <http://dbpedia.org/resource/Paris> <http://www.w3.org/2000/01/rdf-schema#label> ?label.
+    <http://dbpedia.org/resource/Paris> <http://xmlns.com/foaf/0.1/homePage> ?homePage.
+    <http://dbpedia.org/resource/Paris> <http://dbpedia.org/ontology/populationTotal> ?popTotal.
 
-    dbo:country <http://www.w3.org/2000/01/rdf-schema#label> ?labelCountry.
-    dbo:mayor <http://www.w3.org/2000/01/rdf-schema#label> ?labelMayor.
-    dbo:populationTotal <http://www.w3.org/2000/01/rdf-schema#label> ?labelPopulationTotal.
-    geo:long <http://www.w3.org/2000/01/rdf-schema#label> ?labelLong.
-    geo:lat <http://www.w3.org/2000/01/rdf-schema#label> ?labelLat.
     <http://dbpedia.org/ontology/abstract> <http://www.w3.org/2000/01/rdf-schema#label> ?labelAbstract.
-    <http://dbpedia.org/ontology/thumbnail> <http://www.w3.org/2000/01/rdf-schema#label> ?labelPicture.
+    <http://dbpedia.org/ontology/tumbnail> <http://www.w3.org/2000/01/rdf-schema#label> ?labelPicture.
+    <http://purl.org/dc/terms/subject> <http://www.w3.org/2000/01/rdf-schema#label> ?labelSubject.
     <http://www.w3.org/2000/01/rdf-schema#label> <http://www.w3.org/2000/01/rdf-schema#label> ?labelLabel.
+    <http://xmlns.com/foaf/0.1/homePage> <http://www.w3.org/2000/01/rdf-schema#label> ?labelHomePage.
+    <http://dbpedia.org/ontology/populationTotal> <http://www.w3.org/2000/01/rdf-schema#label> ?labelPopTotal.
 } WHERE {
-    {
-        select * where {
-
-            <http://dbpedia.org/resource/Paris> <http://www.w3.org/2000/01/rdf-schema#label> ?label.
-
-            OPTIONAL {
-             <http://www.w3.org/2000/01/rdf-schema#label> <http://www.w3.org/2000/01/rdf-schema#label> ?labelLabel.
-            }
-
-        }
-    }
-    UNION
-    {
-        select * where {
-
-            <http://dbpedia.org/resource/Paris> <http://dbpedia.org/ontology/country> ?country.
-
-            OPTIONAL {
-             <http://dbpedia.org/ontology/country> <http://www.w3.org/2000/01/rdf-schema#label> ?labelCountry.
-            }
-
-        }
-    }
-    UNION
-    {
-        select * where {
-
-            <http://dbpedia.org/resource/Paris> dbo:mayor ?mayor.
-
-            OPTIONAL {
-                dbo:mayor <http://www.w3.org/2000/01/rdf-schema#label> ?labelMayor.
-            }
-
-        }
-    }
-    UNION
-    {
-        select * where {
-
-            <http://dbpedia.org/resource/Paris> dbo:populationTotal ?populationTotal.
-
-            OPTIONAL {
-                dbo:populationTotal <http://www.w3.org/2000/01/rdf-schema#label> ?labelPopulationTotal.
-            }
-
-        }
-    }
-    UNION
-    {
-        select * where {
-
-            <http://dbpedia.org/resource/Paris> geo:long ?long.
-
-            OPTIONAL {
-                geo:long <http://www.w3.org/2000/01/rdf-schema#label> ?labelLong
-            }
-
-        }
-    }
-    UNION
-    {
-        select * where {
-
-            <http://dbpedia.org/resource/Paris> geo:lat ?lat.
-
-            OPTIONAL {
-                geo:lat <http://www.w3.org/2000/01/rdf-schema#label> ?labelLat
-            }
-
-        }
-    }
-    UNION
     {
         select * where {
 
@@ -111,6 +35,54 @@ CONSTRUCT {
 
             OPTIONAL {
                 <http://dbpedia.org/ontology/thumbnail> <http://www.w3.org/2000/01/rdf-schema#label> ?labelPicture
+            }
+
+        }
+    }
+    UNION
+    {
+        select * where {
+
+            <http://dbpedia.org/resource/Paris> <http://purl.org/dc/terms/subject> ?subject.
+
+            OPTIONAL {
+                <http://purl.org/dc/terms/subject> <http://www.w3.org/2000/01/rdf-schema#label> ?labelSubject
+            }
+
+        }
+    }
+    UNION
+    {
+        select * where {
+
+            <http://dbpedia.org/resource/Paris> <http://www.w3.org/2000/01/rdf-schema#label> ?label.
+
+            OPTIONAL {
+             <http://www.w3.org/2000/01/rdf-schema#label> <http://www.w3.org/2000/01/rdf-schema#label> ?labelLabel.
+            }
+
+        }
+    }
+    UNION
+    {
+        select * where {
+
+            <http://dbpedia.org/resource/Paris> <http://xmlns.com/foaf/0.1/homePage> ?homePage.
+
+            OPTIONAL {
+             <http://xmlns.com/foaf/0.1/homePage> <http://www.w3.org/2000/01/rdf-schema#label> ?labelHomePage.
+            }
+
+        }
+    }
+    UNION
+    {
+        select * where {
+
+            <http://dbpedia.org/resource/Paris> dbo:populationTotal ?popTotal.
+
+            OPTIONAL {
+                dbo:populationTotal <http://www.w3.org/2000/01/rdf-schema#label> ?labelPopTotal.
             }
 
         }
