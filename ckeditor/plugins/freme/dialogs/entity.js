@@ -8,7 +8,7 @@ CKEDITOR.dialog.add('fremeEntityDialog', function (editor) {
         editor.showNotification('jQuery not found!', 'warning');
     }
 
-    var langs = [['Dutch', 'NL'], ['English', 'EN'], ['French ', 'FR'], ['German ', 'DE'], ['Italian ', 'IT'], ['Spanish ', 'ES']];
+    var langs = [['Dutch', 'NL'], ['English', 'EN'], ['French', 'FR'], ['German', 'DE'], ['Italian', 'IT'], ['Spanish', 'ES'], ['Russian', 'RU']];
     var datasetsJSON = [
         {
             "Name": "dbpedia",
@@ -41,6 +41,14 @@ CKEDITOR.dialog.add('fremeEntityDialog', function (editor) {
             "Description": "The ORCID dataset provides persistent digital identifier for researchers (http://orcid.org/)",
             "TotalEntities": 1321116,
             "CreationTime": 1444922402140
+        },
+	{
+            "Name": "gwpp-glossary",
+            "label": "GWPP Glossary",
+            "desc": "Global Water Pathogens Project Glossary",
+            "Description": "Global Water Pathogens Project Glossary",
+            "TotalEntities": 283,
+            "CreationTime": 1444922402140
         }
     ];
     var datasets = [];
@@ -55,8 +63,8 @@ CKEDITOR.dialog.add('fremeEntityDialog', function (editor) {
 
     function link(sourceText, lang, dataset, cb) {
         doRequest('POST',
-            'http://api-dev.freme-project.eu/current/e-entity/freme-ner/documents?informat=text%2Fhtml&outformat=text%2Fhtml&language=' + lang.toLowerCase() + '&dataset=' + dataset + '&mode=all',
-            '<p>' + encodeURIComponent(sourceText) + '</p>',
+            'http://api.freme-project.eu/current/e-entity/freme-ner/documents?informat=text%2Fhtml&outformat=text%2Fhtml&language=' + lang.toLowerCase() + '&dataset=' + dataset + '&mode=all',
+            '<p>' + sourceText + '</p>',
             {'Content-Type': 'text/html', Accept: 'text/n3'},
             function (results) {
                 var result = '';
@@ -78,7 +86,7 @@ CKEDITOR.dialog.add('fremeEntityDialog', function (editor) {
 
     function doRequest(method, url, data, headers, success, error) {
         $.ajax({
-                method: method,
+                type: method,
                 headers: headers,
                 data: data,
                 url: url
