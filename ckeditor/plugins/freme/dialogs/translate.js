@@ -31,18 +31,18 @@ CKEDITOR.dialog.add('fremeTranslateDialog', function (editor) {
 
     function doRequest(method, url, data, headers, success, error) {
         $.ajax({
-                type: method,
-                headers: headers,
-                data: data,
-                url: url
-            })
+            type: method,
+            headers: headers,
+            data: data,
+            url: url
+        })
             .done(success)
             .fail(error);
     }
 
     function endIt(todo, eTransNot) {
         if (todo === 0) {
-            eTransNot.update({ type: 'success', message: 'e-Translate completed!' });
+            eTransNot.update({type: 'success', message: 'e-Translate completed!'});
         }
     }
 
@@ -98,7 +98,7 @@ CKEDITOR.dialog.add('fremeTranslateDialog', function (editor) {
                         translate($(node.$).text(), inLang, outLang, function (err, text) {
                             todo--;
                             if (err) {
-                                eTransNot.update({ type: 'warning', message: 'e-Translate failed!' });
+                                eTransNot.update({type: 'warning', message: 'e-Translate failed!'});
                                 return console.log(err);
                             }
                             var newNode = new CKEDITOR.dom.element(currTag);
