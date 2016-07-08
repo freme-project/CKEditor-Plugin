@@ -43,6 +43,14 @@ CKEDITOR.dialog.add('fremeEntityDialog', function (editor) {
             "Description": "The ORCID dataset provides persistent digital identifier for researchers (http://orcid.org/)",
             "TotalEntities": 1321116,
             "CreationTime": 1444922402140
+        },
+        {
+            "Name": "gwpp-glossary",
+            "label": "GWPP Glossary",
+            "desc": "Global Water Pathogens Project Glossary",
+            "Description": "Global Water Pathogens Project Glossary",
+            "TotalEntities": 283,
+            "CreationTime": 1444922402140
         }
     ];
     var datasets = [];
@@ -80,11 +88,11 @@ CKEDITOR.dialog.add('fremeEntityDialog', function (editor) {
 
     function doRequest(method, url, data, headers, success, error) {
         $.ajax({
-                type: method,
-                headers: headers,
-                data: data,
-                url: url
-            })
+            type: method,
+            headers: headers,
+            data: data,
+            url: url
+        })
             .done(success)
             .fail(error);
     }
