@@ -9,6 +9,13 @@ CKEDITOR.dialog.add('fremeEntityDialog', function (editor) {
     var datasetsJSON = editor.config.freme.entity.datasets;
     var defaults = editor.config.freme.entity.defaults;
     var datasets = [];
+    var templates = editor.config.freme.entity.templates;
+    if (!templates.class) {
+        templates.class = '$text';
+    }
+    if (!templates.identifier) {
+        templates.identifier = '$text';
+    }
     var desc = {};
     for (var i = 0; i < datasetsJSON.length; i++) {
         var currSet = datasetsJSON[i];
@@ -32,12 +39,42 @@ CKEDITOR.dialog.add('fremeEntityDialog', function (editor) {
                 else {
                     result = results.slice(results.indexOf('<p>') + 3, results.lastIndexOf('</p>'));
                 }
-                cb(null, result);
+                cb(null, template(result));
             },
             function () {
                 cb(new Error('Linking error'));
             }
         );
+
+        function template(html) {
+            var $html = $('<div/>').html(html);
+            $html.find('[its-ta-class-ref]').each(function () {
+                var $span = $(this);
+                if ($span.attr('its-ta-ident-ref')) {
+                    $span.html(toTemplate(templates.identifier, $span));
+                }
+                else {
+                    $span.html(toTemplate(templates.class, $span));
+                }
+            });
+
+            return $html.html();
+
+            /*
+             * $text: original recognized text
+             * $identifier: uri to the identified resource
+             * $class: uri to the identified class
+             * $confidence: uri to the confidence of the resource
+             * */
+            function toTemplate(template, $span) {
+                var text = $span.html();
+                template = template.replace(/\$text/g, text);
+                template = template.replace(/\$identifier/g, $span.attr('its-ta-ident-ref'));
+                template = template.replace(/\$class/g, $span.attr('its-ta-class-ref'));
+                template = template.replace(/\$confidence/g, $span.attr('its-ta-confidence'));
+                return template;
+            }
+        }
 
     }
 
