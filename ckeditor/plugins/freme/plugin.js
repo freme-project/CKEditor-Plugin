@@ -70,7 +70,7 @@ CKEDITOR.plugins.add('freme', {
                  */
                 templates: {
                     class: '$text',
-                    identifier: '$text'
+                    identifier: '<a href="$identifier">$text</a>'
                 }
             },
             link: {
