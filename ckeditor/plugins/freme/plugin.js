@@ -52,6 +52,17 @@ CKEDITOR.plugins.add('freme', {
                 defaults: {
                     language: 'EN',
                     dataset: 'dbpedia'
+                },
+                /**
+                 * Templates: variables are
+                 * $text: original recognized text
+                 * $identifier: uri to the identified resource
+                 * $class: uri to the identified class
+                 * $confidence: uri to the confidence of the resource
+                 */
+                templates: {
+                    class: '$text',
+                    identifier: '$text'
                 }
             },
             link: {
