@@ -2,48 +2,20 @@
  * Created by bjdmeest on 4/12/2015.
  */
 CKEDITOR.dialog.add('fremeEntityDialog', function (editor) {
-    var $ = window.$ || window.jQuery;
+    var $ = editor.config.freme.$,
+        fremeEndpoint = editor.config.freme.endpoint;
 
-    if (!$) {
-        editor.showNotification('jQuery not found!', 'warning');
-    }
-
-    var langs = [['Dutch', 'NL'], ['English', 'EN'], ['French', 'FR'], ['German', 'DE'], ['Italian', 'IT'], ['Spanish', 'ES'], ['Russian', 'RU']];
-    var datasetsJSON = [
-        {
-            "Name": "dbpedia",
-            "label": 'General information from Wikipedia',
-            "desc": 'DBPedia is the structured version of Wikipedia: a free-access, free-content Internet encyclopedia, supported and hosted by the non-profit Wikimedia Foundation.<br/>See <a href="http://dbpedia.org">here</a> for more information.',
-            "Description": "DBpedia datasets for all languages",
-            "TotalEntities": 14200830,
-            "CreationTime": 1435966058019
-        },
-        {
-            "Name": "geopolitical",
-            "label": 'Country information',
-            "desc": "The FAO geopolitical ontology and related services have been developed to facilitate data exchange and sharing in a standardized manner among systems managing information about countries and/or regions.<br/>The geopolitical ontology ensures that FAO and associated partners can rely on a master reference for geopolitical information, as it manages names in multiple languages (English, French, Spanish, Arabic, Chinese, Russian and Italian); maps standard coding systems (UN, ISO, FAOSTAT, AGROVOC, etc); provides relations among territories (land borders, group membership, etc); and tracks historical changes.<br/>See <a href='http://www.fao.org/countryprofiles/geoinfo/en/'>here</a> for more information.",
-            "Description": "Geopolitical ontology (http://www.fao.org/countryprofiles/geoinfo/en/)",
-            "TotalEntities": 5905,
-            "CreationTime": 1442405451333
-        },
-        {
-            "Name": "viaf",
-            "label": "Information about authors, artists, etc.",
-            "desc": "The VIAF® (Virtual International Authority File) combines multiple name authority files into a single OCLC-hosted name authority service. The goal of the service is to lower the cost and increase the utility of library authority files by matching and linking widely-used authority files and making that information available on the Web.<br/>See <a href='http://viaf.org/'>here</a> for more information.",
-            "Description": "The VIAF® (Virtual International Authority File) dataset is a collection of multiple name authority files. (http://viaf.org/)",
-            "TotalEntities": 44119711,
-            "CreationTime": 1444922284386
-        },
-        {
-            "Name": "orcid",
-            "label": "Information on scientific researchers",
-            "desc": "ORCID is an open, non-profit, community-driven effort to create and maintain a registry of unique researcher identifiers and a transparent method of linking research activities and outputs to these identifiers. ORCID is unique in its ability to reach across disciplines, research sectors and national boundaries. It is a hub that connects researchers and research through the embedding of ORCID identifiers in key workflows, such as research profile maintenance, manuscript submissions, grant applications, and patent applications.<br/>See <a href='http://orcid.org/'>here</a> for more information.",
-            "Description": "The ORCID dataset provides persistent digital identifier for researchers (http://orcid.org/)",
-            "TotalEntities": 1321116,
-            "CreationTime": 1444922402140
-        }
-    ];
+    var langs = editor.config.freme.entity.languages;
+    var datasetsJSON = editor.config.freme.entity.datasets;
+    var defaults = editor.config.freme.entity.defaults;
     var datasets = [];
+    var templates = editor.config.freme.entity.templates;
+    if (!templates.class) {
+        templates.class = '$text';
+    }
+    if (!templates.identifier) {
+        templates.identifier = '$text';
+    }
     var desc = {};
     for (var i = 0; i < datasetsJSON.length; i++) {
         var currSet = datasetsJSON[i];
@@ -55,7 +27,7 @@ CKEDITOR.dialog.add('fremeEntityDialog', function (editor) {
 
     function link(sourceText, lang, dataset, cb) {
         doRequest('POST',
-            'http://api.freme-project.eu/0.6/e-entity/freme-ner/documents?informat=text%2Fhtml&outformat=text%2Fhtml&language=' + lang.toLowerCase() + '&dataset=' + dataset + '&mode=all',
+            fremeEndpoint + 'e-entity/freme-ner/documents?informat=text%2Fhtml&outformat=text%2Fhtml&language=' + lang.toLowerCase() + '&dataset=' + dataset + '&mode=all',
             '<p>' + sourceText + '</p>',
             {'Content-Type': 'text/html', Accept: 'text/n3'},
             function (results) {
@@ -67,22 +39,52 @@ CKEDITOR.dialog.add('fremeEntityDialog', function (editor) {
                 else {
                     result = results.slice(results.indexOf('<p>') + 3, results.lastIndexOf('</p>'));
                 }
-                cb(null, result);
+                cb(null, template(result));
             },
             function () {
                 cb(new Error('Linking error'));
             }
         );
 
+        function template(html) {
+            var $html = $('<div/>').html(html);
+            $html.find('[its-ta-class-ref]').each(function () {
+                var $span = $(this);
+                if ($span.attr('its-ta-ident-ref')) {
+                    $span.html(toTemplate(templates.identifier, $span));
+                }
+                else {
+                    $span.html(toTemplate(templates.class, $span));
+                }
+            });
+
+            return $html.html();
+
+            /*
+             * $text: original recognized text
+             * $identifier: uri to the identified resource
+             * $class: uri to the identified class
+             * $confidence: uri to the confidence of the resource
+             * */
+            function toTemplate(template, $span) {
+                var text = $span.html();
+                template = template.replace(/\$text/g, text);
+                template = template.replace(/\$identifier/g, $span.attr('its-ta-ident-ref'));
+                template = template.replace(/\$class/g, $span.attr('its-ta-class-ref'));
+                template = template.replace(/\$confidence/g, $span.attr('its-ta-confidence'));
+                return template;
+            }
+        }
+
     }
 
     function doRequest(method, url, data, headers, success, error) {
         $.ajax({
-                type: method,
-                headers: headers,
-                data: data,
-                url: url
-            })
+            type: method,
+            headers: headers,
+            data: data,
+            url: url
+        })
             .done(success)
             .fail(error);
     }
@@ -101,14 +103,14 @@ CKEDITOR.dialog.add('fremeEntityDialog', function (editor) {
                         id: 'lang',
                         label: 'Language of the text',
                         items: langs,
-                        default: 'EN'
+                        default: defaults.language
                     },
                     {
                         type: 'select',
                         id: 'dataset',
                         label: 'What are you looking for?',
                         items: datasets,
-                        default: 'dbpedia',
+                        default: defaults.dataset,
                         onChange: function () {
                             this.getDialog().getContentElement('tab-main', 'dataset-desc').getElement().$.innerHTML = desc[this.getValue()];
                         }
@@ -116,7 +118,7 @@ CKEDITOR.dialog.add('fremeEntityDialog', function (editor) {
                     {
                         type: 'html',
                         id: 'dataset-desc',
-                        html: '<div style="white-space: initial; color: gray; border-left: gainsboro solid 4px; padding-left: 8px;">' + desc['dbpedia'] + '</div>'
+                        html: '<div style="white-space: initial; color: gray; border-left: gainsboro solid 4px; padding-left: 8px;">' + desc[defaults.dataset] + '</div>'
                     }
                 ]
             }
@@ -146,6 +148,7 @@ CKEDITOR.dialog.add('fremeEntityDialog', function (editor) {
                     link($el.html(), lang, dataset, function (err, html) {
                         todo--;
                         if (err) {
+                            eEntityNot.update({type: 'warning', message: 'Detection could not be executed!'});
                             return console.log(err);
                         }
                         node.setHtml(html);

@@ -3,5 +3,18 @@
   "label": "Basic location info",
   "description": "This is a template for the CKEditor, where basic location info from DBPedia is returned",
   "endpointType": "sparql",
-  "visibility": "public"
+  "visibility": "public",
+  "properties": {
+    "abstract": "http://dbpedia.org/ontology/abstract",
+    "birthDate": "http://dbpedia.org/ontology/birthDate",
+    "birthPlace": "http://dbpedia.org/ontology/birthPlace",
+    "image": "http://dbpedia.org/property/image",
+    "thumbnail": "http://dbpedia.org/ontology/thumbnail",
+    "name": "http://dbpedia.org/property/name",
+    "fName": "http://xmlns.com/foaf/0.1/name",
+    "nationality": "http://dbpedia.org/property/nationality",
+    "subject": "http://purl.org/dc/terms/subject",
+    "homePage": "http://xmlns.com/foaf/0.1/homePage",
+    "wikipage": "http://xmlns.com/foaf/0.1/isPrimaryTopicOf"
+  }
 }

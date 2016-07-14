@@ -11,21 +11,21 @@ var fremeBase = 'http://api.freme-project.eu/0.6/';
 var authName = 'bjdmeest',
     authPass = 'fremefreme';
 
-request({
-    url: fremeBase + 'authenticate',
-    method: 'POST',
-    headers: {
-        'Content-Type': 'text/plain',
-        Accept: 'application/json',
-        'X-Auth-Username': authName,
-        'X-Auth-Password': authPass
-    }
-}, function (err, res, body) {
-    body = JSON.parse(body);
-    if (!body.token && body.status !== 200) {
-        throw new Error(body.message);
-    }
-    var token = body.token;
+// request({
+//     url: fremeBase + 'authenticate',
+//     method: 'POST',
+//     headers: {
+//         'Content-Type': 'text/plain',
+//         Accept: 'application/json',
+//         'X-Auth-Username': authName,
+//         'X-Auth-Password': authPass
+//     }
+// }, function (err, res, body) {
+//     body = JSON.parse(body);
+//     if (!body.token && body.status !== 200) {
+//         throw new Error(body.message);
+//     }
+    var token = '0c87f536-69bf-4d25-adae-bb9ec9330390'; //body.token;
 
     request({
             url: fremeBase + 'e-link/templates/',
@@ -38,6 +38,7 @@ request({
             }
         },
         function (err, res, templates) {
+            // TODO check if has properties: create sparql.
             templates = JSON.parse(templates);
             var exists = {};
             for (var i = 0; i < templates.length; i++) {
@@ -46,9 +47,10 @@ request({
             var templateBaseDir = path.resolve(__dirname, './templates');
             fs.readdir(templateBaseDir, function (err, files) {
                 async.mapLimit(files, 4, function (file, done) {
-                    if (file.indexOf('.txt') === -1) {
+                    if (file.indexOf('.txt') === -1 || file.indexOf('everything') === -1) {
                         return done();
                     }
+                    console.log(file);
 
                     async.map([path.resolve(templateBaseDir, file), path.resolve(templateBaseDir, file.replace('.txt', '.json'))], function (file, readDone) {
                         fs.readFile(file, 'utf8', readDone);
@@ -89,4 +91,4 @@ request({
                 });
             });
         });
-});
+// });
