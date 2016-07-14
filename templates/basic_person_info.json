@@ -1,7 +1,15 @@
 {
-    "endpoint": "http://dbpedia.org/sparql/",
-    "label": "Basic person info",
-    "description": "This is a template for the CKEditor, where basic person info from DBPedia is returned",
-    "endpointType": "sparql",
-    "visibility": "public"
+  "endpoint": "http://dbpedia.org/sparql/",
+  "label": "Basic person info",
+  "description": "This is a template for the CKEditor, where basic person info from DBPedia is returned",
+  "endpointType": "sparql",
+  "visibility": "public",
+  "properties": {
+    "abstract": "http://dbpedia.org/ontology/abstract",
+    "thumbnail": "http://dbpedia.org/ontology/thumbnail",
+    "subject": "http://purl.org/dc/terms/subject",
+    "label": "http://www.w3.org/2000/01/rdf-schema#label",
+    "homePage": "http://xmlns.com/foaf/0.1/homePage",
+    "populationTotal": "http://dbpedia.org/ontology/populationTotal"
+  }
 }
