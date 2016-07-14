@@ -1,6 +1,6 @@
 {
   "name": "ckeditor-plugin",
-  "version": "0.0.0",
+  "version": "0.2.0",
   "description": "CKEditor Plugin for FREME",
   "main": "createTemplates.js",
   "scripts": {
