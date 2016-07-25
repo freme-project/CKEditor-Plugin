@@ -12,7 +12,7 @@ CKEDITOR.plugins.add('freme', {
 
         editor.config.freme = {
             $: $,
-            endpoint: 'http://api.freme-project.eu/0.6/',
+            endpoint: 'http://api-dev.freme-project.eu/current/',
             entity: {
                 languages: [['Dutch', 'NL'], ['English', 'EN'], ['French', 'FR'], ['German', 'DE'], ['Italian', 'IT'], ['Spanish', 'ES'], ['Russian', 'RU']],
                 datasets: [
@@ -47,6 +47,14 @@ CKEDITOR.plugins.add('freme', {
                         "Description": "The ORCID dataset provides persistent digital identifier for researchers (http://orcid.org/)",
                         "TotalEntities": 1321116,
                         "CreationTime": 1444922402140
+                    },
+                    {
+                        "Name": "europeana",
+                        "label": "Cultural information",
+                        "desc": "Europeana.eu is an internet portal that acts as an interface to millions of books, paintings, films, museum objects and archival records that have been digitised throughout Europe.",
+                        "Description": "The Europeana.eu dataset provides all sorts of cultural information (http://europeana.eu)",
+                        "TotalEntities": 3619192,
+                        "CreationTime": 1467280746152
                     }
                 ],
                 defaults: {
@@ -67,7 +75,7 @@ CKEDITOR.plugins.add('freme', {
             },
             link: {
                 templates: {
-                    all: 4477
+                    all: 4457
                 },
                 properties: [
                     {

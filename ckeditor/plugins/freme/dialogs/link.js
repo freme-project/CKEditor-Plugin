@@ -156,8 +156,7 @@ CKEDITOR.dialog.add('fremeLinkDialog', function (editor) {
                 }
                 var resourceData = niceResults[resource];
                 typeElements = [];
-                console.log(type);
-                if (typeProperties[type]) {
+                if (resourceData && typeProperties[type]) {
                     for (i = 0; i < typeProperties[type].length; i++) {
                         if (resourceData[typeProperties[type][i][1]]) {
                             typeElements.push(typeProperties[type][i][1]);
