@@ -5,12 +5,22 @@ CKEDITOR.plugins.add('freme', {
     init: function (editor) {
         var $ = window.$ || window.jQuery;
 
+        if (!editor.config.extraConfig) {
+            editor.config.extraConfig = {};
+        }
+        if (!editor.config.extraConfig.plugins) {
+            editor.config.extraConfig.plugins = {};
+        }
+        if (!editor.config.extraConfig.plugins.freme) {
+            editor.config.extraConfig.plugins.freme = {};
+        }
+
         if (!$) {
             editor.showNotification('jQuery not found!', 'warning');
         }
         editor.addContentsCss(this.path + 'styles/style-freme.css');
 
-        editor.config.freme = {
+        var defaultConfig = {
             $: $,
             endpoint: 'http://api.freme-project.eu/0.6/',
             entity: {
@@ -119,6 +129,8 @@ CKEDITOR.plugins.add('freme', {
             }
 
         };
+
+        editor.config.freme = CKEDITOR.tools.extend(editor.config.extraConfig.plugins.freme, defaultConfig);
 
         editor.addCommand('fremeTranslate', new CKEDITOR.dialogCommand('fremeTranslateDialog'));
         editor.ui.addButton('FremeTranslate', {
