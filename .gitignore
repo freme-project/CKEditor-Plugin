@@ -11,4 +11,4 @@ ckeditor/plugins/*
 #Alleen freme sample
 !ckeditor/samples/
 ckeditor/samples/*
-!ckeditor/samples/freme.html
+!ckeditor/samples/freme*.html
