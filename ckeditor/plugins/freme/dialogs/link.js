@@ -3,7 +3,8 @@
  */
 CKEDITOR.dialog.add('fremeLinkDialog', function (editor) {
     var $ = editor.config.freme.$,
-        fremeEndpoint = editor.config.freme.endpoint;
+        fremeEndpoint = editor.config.freme.endpoint,
+        templates = editor.config.freme.link.templates;
 
     var endpointTypes = {
         'http://dbpedia.org/sparql': 'sparql'
@@ -61,16 +62,9 @@ CKEDITOR.dialog.add('fremeLinkDialog', function (editor) {
         }
     };
 
-    var typeProperties = {};
-    var properties = editor.config.freme.link.properties;
-    for (var i = 0; i < properties.length; i++) {
-        for (var j = 0; j < properties[i].types.length; j++) {
-            typeProperties[properties[i].types[j]] = properties[i].data;
-        }
-    }
-    var allTemplate = editor.config.freme.link.templates.all;
     var typeElements = [];
     var currentInsertingEl = null;
+    var $el = null;
 
     function doRequest(method, url, data, headers, success, error) {
         $.ajax({
@@ -83,140 +77,181 @@ CKEDITOR.dialog.add('fremeLinkDialog', function (editor) {
             .fail(error);
     }
 
-    return {
+    var definition = {
         title: 'Information about <>',
         minWidth: 600,
         minHeight: 200,
         buttons: [CKEDITOR.dialog.okButton],
-        contents: [
-            {
-                id: 'tab-spinner',
-                elements: [
-                    {
-                        type: 'html',
-                        id: 'html-spinner',
-                        html: '<p>Please hold on, we are fetching the content...</p>'
-                    }
-                ]
-            }, {
-                id: 'tab-main',
-                elements: [
-                    {
-                        type: 'html',
-                        id: 'general-info',
-                        html: 'Type: <span class="resource-type"></span> (<a style="color: blue; text-decoration: underline;" class="resource-url" target="_blank"></a> &crarr;)'
-                    },
-                    {
-                        type: 'html',
-                        id: 'contentbox',
-                        html: '' +
-                        '<div class="contentbox override">' +
-                        '  <div class="row">' +
-                        '    <div class="col-md-4" id="contentbox-radios">' +
-                        '      <div class="type-radio"></div>' +
-                        '      <hr style="border-bottom: 1px lightgrey solid;"/>' +
-                        '      <div class="general-radio"></div>' +
-                        '    </div>' +
-                        '    <div class="col-md-8">' +
-                        '      <p>Resource preview <span class="right"><button class="btn btn-insert-o">Insert</button></span></p>' +
-                        '      <div class="viewbox"></div>' +
-                        '    </div>' +
-                        '  </div>' +
-                        '</div>'
-                    }
-                ]
-            }
-        ],
+        contents: [],
         onShow: function () {
             var dialog = this;
-            dialog.hidePage('tab-main');
-            var $el = $(editor.document.getSelection().getStartElement().$);
-            var text = $el.text();
-            dialog.getElement().getFirst().find('.cke_dialog_title').getItem(0).setText('Information about <' + text + '>');
-            var type = $el.attr('its-ta-class-ref');
-            dialog.getContentElement('tab-main', 'general-info').getElement().getElementsByTag('span').getItem(0).setText(type);
-            labelBase.getLabel(type, function (err, label) {
-                if (!err) {
-                    dialog.getContentElement('tab-main', 'general-info').getElement().getElementsByTag('span').getItem(0).setText(label);
-                }
-            });
-            var resource = $el.attr('its-ta-ident-ref');
-            dialog.getContentElement('tab-main', 'general-info').getElement().getElementsByTag('a').getItem(0).setText(resource);
-            dialog.getContentElement('tab-main', 'general-info').getElement().getElementsByTag('a').getItem(0).setAttribute('href', resource);
-            var $typeRadio = $(dialog.getContentElement('tab-main', 'contentbox').getElement().$).find('div.type-radio');
-            var $generalRadio = $(dialog.getContentElement('tab-main', 'contentbox').getElement().$).find('div.general-radio');
-            $typeRadio.empty();
-            $generalRadio.empty();
+            $el = $(editor.document.getSelection().getStartElement().$);
             placeCaretAfterIdentRef(editor);
-            doTemplate(resource, allTemplate, function (err, results) {
-                results = removeContext(results);
-                var niceResults = {};
-                for (var i = 0; i < results['@graph'].length; i++) {
-                    niceResults[results['@graph'][i]['@id']] = results['@graph'][i];
-                }
-                var resourceData = niceResults[resource];
-                typeElements = [];
-                if (resourceData && typeProperties[type]) {
-                    for (i = 0; i < typeProperties[type].length; i++) {
-                        if (resourceData[typeProperties[type][i][1]]) {
-                            typeElements.push(typeProperties[type][i][1]);
-                        }
-                    }
-                    typeElements.sort(function (a, b) {
-                        return getLabelLD(niceResults, a) < getLabelLD(niceResults, b);
-                    });
-                    $typeRadio.empty();
-                    var $ul = $('<ul></ul>');
-                    $typeRadio.append($ul);
-                    for (i = 0; i < typeElements.length; i++) {
-                        var $li = $('<li data-url="' + typeElements[i] + '">' + getLabelLD(niceResults, typeElements[i]) + '</li>');
-                        $ul.append($li);
-                    }
-                    $ul.find('li').on('click', function () {
-                        updateView(dialog, niceResults, $(this).attr('data-url'), resourceData[$(this).attr('data-url')]);
-                    });
-                    $typeRadio.css('display', 'block');
-                }
-                $generalRadio.empty();
-                var $gUl = $('<ul></ul>');
-                $generalRadio.append($gUl);
-                var lis = [];
-                for (var key in resourceData) {
-                    if (resourceData.hasOwnProperty(key)) {
-                        if (key.indexOf('http') !== 0) {
-                            continue;
-                        }
-                        var $gLi = $('<li data-url="' + key + '">' + getLabelLD(niceResults, key) + '</li>');
-                        lis.push($gLi);
-
-                    }
-                }
-                lis.sort(function (a, b) {
-                    return a.text().toLowerCase() > b.text().toLowerCase();
-                });
-                for (i = 0; i < lis.length; i++) {
-                    $gUl.append(lis[i]);
-                }
-                $gUl.find('li').on('click', function () {
-                    updateView(dialog, niceResults, $(this).attr('data-url'), resourceData[$(this).attr('data-url')]);
-                });
-                dialog.showPage('tab-main');
-                dialog.selectPage('tab-main');
-                dialog.hidePage('tab-spinner');
-
-                $('#contentbox-radios').find('li').on('click', function () {
-                    $('#contentbox-radios').find('li').removeClass('active');
-                    $(this).addClass('active');
-                });
-            });
+            resetTabs(dialog);
+            loadTab(dialog, 'tab-' + templates[0].label);
         },
         onLoad: function () {
             var dialog = this;
-            $(dialog.getContentElement('tab-main', 'contentbox').getElement().$).find('button.btn-insert-o').on('click', function (e) {
-                insertInEditor();
+            dialog.on('selectPage', function (e) {
+                loadTab(dialog, e.data.page);
             });
+            for (var key in tabs) {
+                if (tabs.hasOwnProperty(key)) {
+                    $(dialog.getContentElement(key, 'contentbox').getElement().$).find('button.btn-insert-o').on('click', function (e) {
+                        insertInEditor();
+                    });
+                }
+            }
         }
     };
+
+    var tabs = {};
+    for (var i = 0; i < templates.length; i++) {
+        var tabId = 'tab-' + templates[i].label;
+        tabs[tabId] = {
+            index: i,
+            id: tabId
+        };
+        definition.contents.push({
+            id: tabId,
+            title: templates[i].label,
+            label: templates[i].label,
+            elements: [
+                {
+                    type: 'html',
+                    id: 'html-spinner',
+                    html: '<p>Please hold on, we are fetching the content...</p>'
+                },
+                {
+                    type: 'html',
+                    id: 'general-info',
+                    html: '<div style="display: none">Type: <span class="resource-type"></span> (<a style="color: blue; text-decoration: underline;" class="resource-url" target="_blank"></a> &crarr;)</div>'
+                },
+                {
+                    type: 'html',
+                    id: 'contentbox',
+                    html: '' +
+                    '<div class="contentbox override" style="display: none">' +
+                    '  <div class="row">' +
+                    '    <div class="col-md-4" id="contentbox-radios">' +
+                    '      <div class="type-radio"></div>' +
+                    '      <hr style="border-bottom: 1px lightgrey solid;"/>' +
+                    '      <div class="general-radio"></div>' +
+                    '    </div>' +
+                    '    <div class="col-md-8">' +
+                    '      <p>Resource preview <span class="right"><button class="btn btn-insert-o">Insert</button></span></p>' +
+                    '      <div class="viewbox"></div>' +
+                    '    </div>' +
+                    '  </div>' +
+                    '</div>'
+                }
+            ]
+        });
+    }
+
+    return definition;
+
+    function resetTabs(dialog, tabs) {
+        for (var key in tabs) {
+            if (tabs.hasOwnProperty(key)) {
+                dialog.getContentElement(key, 'general-info').getElement().hide();
+                dialog.getContentElement(key, 'contentbox').getElement().hide();
+                dialog.getContentElement(key, 'html-spinner').getElement().show();
+            }
+        }
+    }
+
+    function loadTab(dialog, tabId) {
+        var text = $el.text();
+        var template = templates[tabs[tabId].index];
+        var typeProperties = {};
+        var properties = template.properties;
+        for (var i = 0; i < properties.length; i++) {
+            for (var j = 0; j < properties[i].types.length; j++) {
+                typeProperties[properties[i].types[j]] = properties[i].data;
+            }
+        }
+        dialog.getElement().getFirst().find('.cke_dialog_title').getItem(0).setText('Information about <' + text + '>');
+        var type = $el.attr('its-ta-class-ref');
+        dialog.getContentElement(tabId, 'general-info').getElement().getElementsByTag('span').getItem(0).setText(type);
+        labelBase.getLabel(type, function (err, label) {
+            if (!err) {
+                dialog.getContentElement(tabId, 'general-info').getElement().getElementsByTag('span').getItem(0).setText(label);
+            }
+        });
+        var resource = $el.attr('its-ta-ident-ref');
+        dialog.getContentElement(tabId, 'general-info').getElement().getElementsByTag('a').getItem(0).setText(resource);
+        dialog.getContentElement(tabId, 'general-info').getElement().getElementsByTag('a').getItem(0).setAttribute('href', resource);
+        var $typeRadio = $(dialog.getContentElement(tabId, 'contentbox').getElement().$).find('div.type-radio');
+        var $generalRadio = $(dialog.getContentElement(tabId, 'contentbox').getElement().$).find('div.general-radio');
+        $typeRadio.empty();
+        $generalRadio.empty();
+        doTemplate(resource, template.id, function (err, results) {
+            results = removeContext(results);
+            var niceResults = {};
+            for (var i = 0; i < results['@graph'].length; i++) {
+                niceResults[results['@graph'][i]['@id']] = results['@graph'][i];
+            }
+            var resourceData = niceResults[resource];
+            typeElements = [];
+            if (resourceData && typeProperties[type]) {
+                for (i = 0; i < typeProperties[type].length; i++) {
+                    if (resourceData[typeProperties[type][i][1]]) {
+                        typeElements.push(typeProperties[type][i][1]);
+                    }
+                }
+                typeElements.sort(function (a, b) {
+                    return getLabelLD(niceResults, a) < getLabelLD(niceResults, b);
+                });
+                $typeRadio.empty();
+                var $ul = $('<ul></ul>');
+                $typeRadio.append($ul);
+                for (i = 0; i < typeElements.length; i++) {
+                    var $li = $('<li data-url="' + typeElements[i] + '">' + getLabelLD(niceResults, typeElements[i]) + '</li>');
+                    $ul.append($li);
+                }
+                $ul.find('li').on('click', function () {
+                    updateView(dialog, tabId, niceResults, $(this).attr('data-url'), resourceData[$(this).attr('data-url')]);
+                });
+                $typeRadio.css('display', 'block');
+            }
+            $generalRadio.empty();
+            var $gUl = $('<ul></ul>');
+            $generalRadio.append($gUl);
+            var lis = [];
+            for (var key in resourceData) {
+                if (resourceData.hasOwnProperty(key)) {
+                    if (key.indexOf('http') !== 0) {
+                        continue;
+                    }
+                    var $gLi = $('<li data-url="' + key + '">' + getLabelLD(niceResults, key) + '</li>');
+                    lis.push($gLi);
+
+                }
+            }
+            lis.sort(function (a, b) {
+                return a.text().toLowerCase() > b.text().toLowerCase();
+            });
+            for (i = 0; i < lis.length; i++) {
+                $gUl.append(lis[i]);
+            }
+            $gUl.find('li').on('click', function () {
+                updateView(dialog, tabId, niceResults, $(this).attr('data-url'), resourceData[$(this).attr('data-url')]);
+            });
+
+            dialog.getContentElement(tabId, 'general-info').getElement().show();
+            dialog.getContentElement(tabId, 'contentbox').getElement().show();
+            dialog.getContentElement(tabId, 'html-spinner').getElement().hide();
+            // dialog.showPage('tab-main');
+            // dialog.selectPage('tab-main');
+            // dialog.hidePage('tab-spinner');
+
+            $('#contentbox-radios').find('li').on('click', function () {
+                $('#contentbox-radios').find('li').removeClass('active');
+                $(this).addClass('active');
+            });
+        });
+    }
 
     function getLabelLD(results, resource, lang) {
         lang = lang || 'en';
@@ -240,7 +275,7 @@ CKEDITOR.dialog.add('fremeLinkDialog', function (editor) {
         return labels[0]['@value'];
     }
 
-    function updateView(dialog, results, predicate, data) {
+    function updateView(dialog, tabId, results, predicate, data) {
         var txt = '';
         var html = '';
         if (Object.prototype.toString.call(data) === '[object Array]') {
@@ -259,7 +294,7 @@ CKEDITOR.dialog.add('fremeLinkDialog', function (editor) {
                     type: 'text',
                     value: getValueLabel(data[0])
                 };
-                var $viewbox = $(dialog.getContentElement('tab-main', 'contentbox').getElement().$).find('div.viewbox');
+                var $viewbox = $(dialog.getContentElement(tabId, 'contentbox').getElement().$).find('div.viewbox');
                 $viewbox.html(html);
                 $viewbox.find('#tab-container').easytabs();
                 $viewbox.find('#tab-container')
@@ -280,7 +315,7 @@ CKEDITOR.dialog.add('fremeLinkDialog', function (editor) {
                     type: 'text',
                     value: txt
                 };
-                $(dialog.getContentElement('tab-main', 'contentbox').getElement().$).find('div.viewbox').html(html);
+                $(dialog.getContentElement(tabId, 'contentbox').getElement().$).find('div.viewbox').html(html);
             }
         }
         else {
@@ -289,7 +324,7 @@ CKEDITOR.dialog.add('fremeLinkDialog', function (editor) {
                 type: 'text',
                 value: txt
             };
-            $(dialog.getContentElement('tab-main', 'contentbox').getElement().$).find('div.viewbox').html(html);
+            $(dialog.getContentElement(tabId, 'contentbox').getElement().$).find('div.viewbox').html(html);
         }
 
         function getValueLabel(el) {
