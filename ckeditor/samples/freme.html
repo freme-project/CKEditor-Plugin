@@ -124,6 +124,12 @@ For licensing, see LICENSE.md or http://ckeditor.com/license
             margin-top: 8px;
             border-radius: 8px;
         }
+
+        .override ul:before{
+            content: attr(data-title);
+            font-weight: bold;
+            font-style: italic;
+        }
     </style>
     <!-- /DATATABLES -->
     <link rel="stylesheet" href="css/samples.css">

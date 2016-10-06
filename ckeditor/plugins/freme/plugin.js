@@ -117,6 +117,12 @@ CKEDITOR.plugins.add('freme', {
                                 ]
                             }
                         ]
+                    },
+                    {
+                        label: 'based near',
+                        id: 1,
+                        properties: [
+                        ]
                     }
                 ]
             },

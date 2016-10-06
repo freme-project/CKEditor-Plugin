@@ -31,6 +31,7 @@ CKEDITOR.dialog.add('fremeLinkDialog', function (editor) {
                 'http://www.w3.org/ns/prov#wasDerivedFrom': 'was derived from',
                 'http://dbpedia.org/property/languages': 'languages',
                 'http://xmlns.com/foaf/0.1/depiction': 'depiction',
+                'http://xmlns.com/foaf/0.1/based_near': 'based near',
                 'http://xmlns.com/foaf/0.1/isPrimaryTopicOf': 'is primary topic of',
                 'http://dbpedia.org/property/imageFlag': 'image flag',
                 'http://www.w3.org/2000/01/rdf-schema#comment': 'comment'
@@ -137,6 +138,8 @@ CKEDITOR.dialog.add('fremeLinkDialog', function (editor) {
                     '      <div class="type-radio"></div>' +
                     '      <hr style="border-bottom: 1px lightgrey solid;"/>' +
                     '      <div class="general-radio"></div>' +
+                    '      <hr style="border-bottom: 1px lightgrey solid;"/>' +
+                    '      <div class="reverse-radio"></div>' +
                     '    </div>' +
                     '    <div class="col-md-8">' +
                     '      <p>Resource preview <span class="right"><button class="btn btn-insert-o">Insert</button></span></p>' +
@@ -184,8 +187,10 @@ CKEDITOR.dialog.add('fremeLinkDialog', function (editor) {
         dialog.getContentElement(tabId, 'general-info').getElement().getElementsByTag('a').getItem(0).setAttribute('href', resource);
         var $typeRadio = $(dialog.getContentElement(tabId, 'contentbox').getElement().$).find('div.type-radio');
         var $generalRadio = $(dialog.getContentElement(tabId, 'contentbox').getElement().$).find('div.general-radio');
+        var $reverseRadio = $(dialog.getContentElement(tabId, 'contentbox').getElement().$).find('div.reverse-radio');
         $typeRadio.empty();
         $generalRadio.empty();
+        $reverseRadio.empty();
         doTemplate(resource, template.id, function (err, results) {
             results = removeContext(results);
             var niceResults = {};
@@ -193,6 +198,25 @@ CKEDITOR.dialog.add('fremeLinkDialog', function (editor) {
                 niceResults[results['@graph'][i]['@id']] = results['@graph'][i];
             }
             var resourceData = niceResults[resource];
+            var reverseResults = {};
+            for (var reverseSub in niceResults) {
+                if (niceResults.hasOwnProperty(reverseSub)) {
+                    if (reverseSub[0] === '_') {
+                        continue;
+                    }
+                    if (reverseSub === resource) {
+                        continue;
+                    }
+                    for (var predicate in niceResults[reverseSub]) {
+                        if (niceResults[reverseSub][predicate] === resource) {
+                            if (!reverseResults[predicate]) {
+                                reverseResults[predicate] = [];
+                            }
+                            reverseResults[predicate].push(reverseSub);
+                        }
+                    }
+                }
+            }
             typeElements = [];
             if (resourceData && typeProperties[type]) {
                 for (i = 0; i < typeProperties[type].length; i++) {
@@ -238,6 +262,29 @@ CKEDITOR.dialog.add('fremeLinkDialog', function (editor) {
             $gUl.find('li').on('click', function () {
                 updateView(dialog, tabId, niceResults, $(this).attr('data-url'), resourceData[$(this).attr('data-url')]);
             });
+
+            $reverseRadio.empty();
+            for (var predicate in reverseResults) {
+                if (!reverseResults.hasOwnProperty(predicate)) {
+                    continue;
+                }
+                var $rUl = $('<ul data-title="' + getLabelLD({}, predicate) + '"></ul>');
+                var lis = [];
+                $reverseRadio.append($rUl);
+                for (i = 0; i < reverseResults[predicate].length; i++) {
+                    var $rLi = $('<li data-url="' + reverseResults[predicate][i] + '">' + getLabelLD({}, reverseResults[predicate][i]) + '</li>');
+                    lis.push($rLi);
+                }
+                lis.sort(function (a, b) {
+                    return a.text().toLowerCase() > b.text().toLowerCase();
+                });
+                for (i = 0; i < lis.length; i++) {
+                    $rUl.append(lis[i]);
+                }
+                $rUl.find('li').on('click', function () {
+                    updateView(dialog, tabId, niceResults, $(this).attr('data-url'), $(this).attr('data-url'));
+                });
+            }
 
             dialog.getContentElement(tabId, 'general-info').getElement().show();
             dialog.getContentElement(tabId, 'contentbox').getElement().show();
