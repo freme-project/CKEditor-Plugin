@@ -84,35 +84,44 @@ CKEDITOR.plugins.add('freme', {
                 }
             },
             link: {
-                templates: {
-                    all: 4477
-                },
-                properties: [
+                templates: [
                     {
-                        types: ['http://nerd.eurecom.fr/ontology#Person', 'http://dbpedia.org/ontology/Person'],
-                        data: [
-                            ["abstract", "http://dbpedia.org/ontology/abstract"],
-                            ["date of birth", "http://dbpedia.org/ontology/birthDate"],
-                            ["place of birth", "http://dbpedia.org/ontology/birthPlace"],
-                            ["image", "http://dbpedia.org/property/image"],
-                            ["thumbnail", "http://dbpedia.org/ontology/thumbnail"],
-                            ["name", "http://dbpedia.org/property/name"],
-                            ["name", "http://xmlns.com/foaf/0.1/name"],
-                            ["nationality", "http://dbpedia.org/property/nationality"],
-                            ["subject", "http://purl.org/dc/terms/subject"],
-                            ["homepage", "http://xmlns.com/foaf/0.1/homePage"],
-                            ["page to wikipedia", "http://xmlns.com/foaf/0.1/isPrimaryTopicOf"]
+                        label: 'all',
+                        id: 17,
+                        properties: [
+                            {
+                                types: ['http://nerd.eurecom.fr/ontology#Person', 'http://dbpedia.org/ontology/Person'],
+                                data: [
+                                    ["abstract", "http://dbpedia.org/ontology/abstract"],
+                                    ["date of birth", "http://dbpedia.org/ontology/birthDate"],
+                                    ["place of birth", "http://dbpedia.org/ontology/birthPlace"],
+                                    ["image", "http://dbpedia.org/property/image"],
+                                    ["thumbnail", "http://dbpedia.org/ontology/thumbnail"],
+                                    ["name", "http://dbpedia.org/property/name"],
+                                    ["name", "http://xmlns.com/foaf/0.1/name"],
+                                    ["nationality", "http://dbpedia.org/property/nationality"],
+                                    ["subject", "http://purl.org/dc/terms/subject"],
+                                    ["homepage", "http://xmlns.com/foaf/0.1/homePage"],
+                                    ["page to wikipedia", "http://xmlns.com/foaf/0.1/isPrimaryTopicOf"]
+                                ]
+                            },
+                            {
+                                types: ['http://nerd.eurecom.fr/ontology#Location', 'http://dbpedia.org/ontology/PopulatedPlace', 'http://dbpedia.org/ontology/Location'],
+                                data: [
+                                    ["abstract", "http://dbpedia.org/ontology/abstract"],
+                                    ["thumbnail", "http://dbpedia.org/ontology/thumbnail"],
+                                    ["subject", "http://purl.org/dc/terms/subject"],
+                                    ["label", "http://www.w3.org/2000/01/rdf-schema#label"],
+                                    ["homepage", "http://xmlns.com/foaf/0.1/homePage"],
+                                    ["total population", "http://dbpedia.org/ontology/populationTotal"]
+                                ]
+                            }
                         ]
                     },
                     {
-                        types: ['http://nerd.eurecom.fr/ontology#Location', 'http://dbpedia.org/ontology/PopulatedPlace', 'http://dbpedia.org/ontology/Location'],
-                        data: [
-                            ["abstract", "http://dbpedia.org/ontology/abstract"],
-                            ["thumbnail", "http://dbpedia.org/ontology/thumbnail"],
-                            ["subject", "http://purl.org/dc/terms/subject"],
-                            ["label", "http://www.w3.org/2000/01/rdf-schema#label"],
-                            ["homepage", "http://xmlns.com/foaf/0.1/homePage"],
-                            ["total population", "http://dbpedia.org/ontology/populationTotal"]
+                        label: 'based near',
+                        id: 1,
+                        properties: [
                         ]
                     }
                 ]
