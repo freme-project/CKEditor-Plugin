@@ -123,6 +123,18 @@ CKEDITOR.plugins.add('freme', {
                         id: 1,
                         properties: [
                         ]
+                    },
+		     {
+                        label: 'spelling japanese',
+                        id: 4517,
+                        properties: [
+                        ]
+                     },
+		    		     {
+                        label: 'spelling russian',
+                        id: 4518,
+                        properties: [
+                        ]
                     }
                 ]
             },
