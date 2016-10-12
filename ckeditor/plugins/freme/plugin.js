@@ -121,20 +121,17 @@ CKEDITOR.plugins.add('freme', {
                     {
                         label: 'based near',
                         id: 1,
-                        properties: [
-                        ]
+                        properties: []
                     },
-		     {
+                    {
                         label: 'spelling japanese',
                         id: 4517,
-                        properties: [
-                        ]
-                     },
-		    		     {
+                        properties: []
+                    },
+                    {
                         label: 'spelling russian',
                         id: 4518,
-                        properties: [
-                        ]
+                        properties: []
                     }
                 ]
             },
