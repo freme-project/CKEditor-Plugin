@@ -87,7 +87,8 @@ CKEDITOR.plugins.add('freme', {
                 languages: [['Bulgarian', 'bg'], ['Croatian', 'hr'], ['Czech', 'cs'], ['Danish', 'da'], ['Dutch', 'nl'], ['English', 'en'], ['Estonian', 'et'], ['Finnish', 'fi'], ['French', 'fr'], ['German', 'de'], ['Greek', 'el'], ['Hungarian', 'hu'], ['Irish', 'ga'], ['Italian', 'it'], ['Latvian', 'lv'], ['Lithuanian', 'lt'], ['Maltese', 'mt'], ['Polish', 'pl'], ['Portuguese', 'pt'], ['Romanian', 'ro'], ['Russian', 'ru'], ['Slovak', 'sk'], ['Slovene', 'sl'], ['Spanish', 'es'], ['Swedish', 'sv'], ['Turkish', 'tr']],
                 defaults: {
                     language_source: 'en',
-                    language_target: 'en'
+                    language_target: 'en',
+                    collection: ''
                 }
             },
             link: {
