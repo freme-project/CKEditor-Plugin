@@ -83,6 +83,13 @@ CKEDITOR.plugins.add('freme', {
                     identifier: '$text'
                 }
             },
+            terminology: {
+                languages: [['Bulgarian', 'bg'], ['Croatian', 'hr'], ['Czech', 'cs'], ['Danish', 'da'], ['Dutch', 'nl'], ['English', 'en'], ['Estonian', 'et'], ['Finnish', 'fi'], ['French', 'fr'], ['German', 'de'], ['Greek', 'el'], ['Hungarian', 'hu'], ['Irish', 'ga'], ['Italian', 'it'], ['Latvian', 'lv'], ['Lithuanian', 'lt'], ['Maltese', 'mt'], ['Polish', 'pl'], ['Portuguese', 'pt'], ['Romanian', 'ro'], ['Russian', 'ru'], ['Slovak', 'sk'], ['Slovene', 'sl'], ['Spanish', 'es'], ['Swedish', 'sv'], ['Turkish', 'tr']],
+                defaults: {
+                    language_source: 'en',
+                    language_target: 'en'
+                }
+            },
             link: {
                 templates: [
                     {
@@ -169,6 +176,17 @@ CKEDITOR.plugins.add('freme', {
             toolbar: 'freme'
         });
         CKEDITOR.dialog.add('fremeEntityDialog', this.path + 'dialogs/entity.js');
+
+        editor.addCommand('fremeTerminology', new CKEDITOR.dialogCommand('fremeTerminologyDialog', {
+            allowedContent: 'a[its-term-info-ref]'
+        }));
+        editor.ui.addButton('FremeTerminology', {
+            label: 'Detect terminology',
+            command: 'fremeTerminology',
+            icon: this.path + 'icons/fremeTerminology.png',
+            toolbar: 'freme'
+        });
+        CKEDITOR.dialog.add('fremeTerminologyDialog', this.path + 'dialogs/terminology.js');
 
         editor.addCommand('fremeLink', new CKEDITOR.dialogCommand('fremeLinkDialog'));
         editor.ui.addButton('FremeLink', {

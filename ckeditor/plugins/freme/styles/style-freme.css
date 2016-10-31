@@ -2,6 +2,10 @@
     background-color: paleturquoise;
 }
 
+[its-term-info-ref] {
+    background-color: palegreen;
+}
+
 [its-ta-ident-ref] {
     background-color: moccasin;
     text-decoration: underline;
