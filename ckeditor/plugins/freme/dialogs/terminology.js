@@ -8,9 +8,10 @@ CKEDITOR.dialog.add('fremeTerminologyDialog', function (editor) {
     var langs = editor.config.freme.terminology.languages;
     var defaults = editor.config.freme.terminology.defaults;
 
-    function link(sourceText, langSource, langTarget, cb) {
+    function link(sourceText, langSource, langTarget, collection, cb) {
+        var url = fremeEndpoint + 'e-terminology/tilde?source-lang=' + langSource.toLowerCase() + '&target-lang=' + langTarget.toLowerCase() + '&mode=full' + (collection ? '&collection=' + collection : '');
         doRequest('POST',
-            fremeEndpoint + 'e-terminology/tilde?source-lang=' + langSource.toLowerCase() + '&target-lang=' + langTarget.toLowerCase() + '&mode=full',
+            url,
             '<p>' + sourceText + '</p>',
             {'Content-Type': 'text/html', Accept: 'text/html'},
             function (results) {
@@ -31,10 +32,14 @@ CKEDITOR.dialog.add('fremeTerminologyDialog', function (editor) {
 
         function addRefs(html, cb) {
             doRequest('POST',
-                fremeEndpoint + 'e-terminology/tilde?source-lang=' + langSource.toLowerCase() + '&target-lang=' + langTarget.toLowerCase() + '&mode=full',
+                url,
                 '<p>' + sourceText + '</p>',
                 {'Content-Type': 'text/html', Accept: 'application/ld+json'},
                 function (json) {
+                    if (!json['@graph']) {
+                        return cb(null, html);
+                    }
+
                     var objs = {};
 
                     for (var i = 0; i < json['@graph'].length; i++) {
@@ -87,13 +92,20 @@ CKEDITOR.dialog.add('fremeTerminologyDialog', function (editor) {
                         label: 'Language of the text',
                         items: langs,
                         default: defaults.language_source
+                    },
+                    {
+                        type: 'text',
+                        id: 'collection',
+                        label: 'Collection id (only terms in that collection will be detected, leave empty to include all collections)',
+                        default: defaults.collection
                     }
                 ]
             }
         ],
         onOk: function () {
-            var sourceLang, targetLang;
+            var sourceLang, targetLang, collection;
             sourceLang = targetLang = this.getValueOf('tab-main', 'lang');
+            collection = this.getValueOf('tab-main', 'collection');
             var doc = editor.document,
                 goodTags = ['h1', 'h2', 'h3', 'blockquote', 'p'],
                 todo = 0;
@@ -113,7 +125,7 @@ CKEDITOR.dialog.add('fremeTerminologyDialog', function (editor) {
                     $el.find('[its-term-info-ref]').each(function () {
                         this.outerHTML = $(this).text();
                     });
-                    link($el.html(), sourceLang, targetLang, function (err, html) {
+                    link($el.html(), sourceLang, targetLang, collection, function (err, html) {
                         todo--;
                         if (err) {
                             eTerminologyNotification.update({type: 'warning', message: 'Detection could not be executed!'});
