@@ -51,8 +51,11 @@ CKEDITOR.dialog.add('fremeTerminologyDialog', function (editor) {
                         var $span = $(this);
                         var refId = $span.attr('its-term-info-ref');
                         if (objs[refId]) {
-                            var ref = Array.isArray(objs[refId]['termInfoRef']) ? objs[refId]['termInfoRef'][0] : objs[refId] ['termInfoRef'];
-                            $span[0].outerHTML = '<a its-term-info-ref="' + $span.attr('its-term-info-ref') + '" href="https://term.tilde.com/terms/' + ref.replace(/^:/, '') + '">' + $span.text() + '</a>';
+                            var refs = Array.isArray(objs[refId]['termInfoRef']) ? objs[refId]['termInfoRef'] : [objs[refId] ['termInfoRef']];
+                            refs = refs.map(function (ref) {
+                                return 'https://term.tilde.com/terms/' + ref.replace(/^:/, '')
+                            });
+                            $span[0].outerHTML = '<span its-term-info-ref="' + refs[0] + (refs.length > 0 ? '" its-term-info-refs="' + refs.join(' ') : '') + '">' + $span.text() + '</span>';
                         }
                     });
 

@@ -179,7 +179,7 @@ CKEDITOR.plugins.add('freme', {
         CKEDITOR.dialog.add('fremeEntityDialog', this.path + 'dialogs/entity.js');
 
         editor.addCommand('fremeTerminology', new CKEDITOR.dialogCommand('fremeTerminologyDialog', {
-            allowedContent: 'a[its-term-info-ref]'
+            allowedContent: 'span[its-term-info-ref,its-term-info-refs]'
         }));
         editor.ui.addButton('FremeTerminology', {
             label: 'Detect terminology',
