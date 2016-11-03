@@ -55,7 +55,7 @@ CKEDITOR.dialog.add('fremeTerminologyDialog', function (editor) {
                             refs = refs.map(function (ref) {
                                 return 'https://term.tilde.com/terms/' + ref.replace(/^:/, '')
                             });
-                            $span[0].outerHTML = '<span its-term-info-ref="' + refs[0] + (refs.length > 0 ? '" its-term-info-refs="' + refs.join(' ') : '') + '">' + $span.text() + '</span>';
+                            $span[0].outerHTML = '<span its-term-info-ref="' + refs[0] + (refs.length > 0 ? '" data-its-term-info-refs="' + refs.join(' ') : '') + '">' + $span.text() + '</span>';
                         }
                     });
 
