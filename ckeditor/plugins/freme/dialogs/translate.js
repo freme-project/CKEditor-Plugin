@@ -10,12 +10,13 @@ CKEDITOR.dialog.add('fremeTranslateDialog', function (editor) {
     var fremeEndpoint = editor.config.freme.endpoint;
 
     function translate(sourceText, sourceLang, targetLang, cb) {
+        var url = fremeEndpoint + 'e-translation/tilde?nif-version=2.1&useI18N=true&source-lang=' + sourceLang.toLowerCase() + '&target-lang=' + targetLang.toLowerCase();
         doRequest('POST',
-            fremeEndpoint + 'e-translation/tilde?informat=text&outformat=json-ld&source-lang=' + sourceLang.toLowerCase() + '&target-lang=' + targetLang.toLowerCase(),
+            url,
             sourceText,
-            {'Content-Type': 'text/plain', Accept: 'application/json+ld'},
+            {'Content-Type': 'text/html', Accept: 'text/html'},
             function (data) {
-                cb(null, data.target['@value']);
+                cb(null, data.toString());
             },
             function () {
                 cb(new Error('Translation error'));
@@ -90,14 +91,14 @@ CKEDITOR.dialog.add('fremeTranslateDialog', function (editor) {
                 for (var j = 0; j < nodes.count(); j++) {
                     var node = nodes.getItem(j);
                     (function (node, currTag, inLang, outLang) {
-                        translate($(node.$).text(), inLang, outLang, function (err, text) {
+                        translate($(node.$).html(), inLang, outLang, function (err, html) {
                             todo--;
                             if (err) {
                                 eTransNot.update({type: 'warning', message: 'e-Translate failed!'});
                                 return console.log(err);
                             }
                             var newNode = new CKEDITOR.dom.element(currTag);
-                            newNode.setText(text);
+                            newNode.setHtml(html);
                             newNode.setStyle('color', 'red');
                             newNode.insertAfter(node);
                             endIt(todo, eTransNot);
