@@ -15,7 +15,7 @@ CKEDITOR.dialog.add('fremeTranslateDialog', function (editor) {
             url,
             sourceText,
             {'Content-Type': 'text/html', Accept: 'text/html'},
-            function (data) {
+            function (data) {;
                 cb(null, data.toString());
             },
             function () {
