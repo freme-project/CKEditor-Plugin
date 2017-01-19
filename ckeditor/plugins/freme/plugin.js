@@ -95,7 +95,7 @@ CKEDITOR.plugins.add('freme', {
                 templates: [
                     {
                         label: 'all',
-                        id: 4477,
+                        id: 9,
                         properties: [
                             {
                                 types: ['http://nerd.eurecom.fr/ontology#Person', 'http://dbpedia.org/ontology/Person'],
