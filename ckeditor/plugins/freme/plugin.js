@@ -22,7 +22,7 @@ CKEDITOR.plugins.add('freme', {
 
         var defaultConfig = {
             $: $,
-            endpoint: 'https://api-dev.freme-project.eu/current/',
+            endpoint: 'https://api.freme-project.eu/current/',
             entity: {
                 languages: [['Dutch', 'NL'], ['English', 'EN'], ['French', 'FR'], ['German', 'DE'], ['Italian', 'IT'], ['Spanish', 'ES'], ['Russian', 'RU']],
                 datasets: [
