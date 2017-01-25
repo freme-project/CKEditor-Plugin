@@ -256,34 +256,44 @@ CKEDITOR.dialog.add('fremeLinkDialog', function (editor) {
             lis.sort(function (a, b) {
                 return a.text().toLowerCase() > b.text().toLowerCase();
             });
-            for (i = 0; i < lis.length; i++) {
-                $gUl.append(lis[i]);
+            if (lis.length === 0) {
+                $gUl.append('<li>No results found</li>');
             }
-            $gUl.find('li').on('click', function () {
-                updateView(dialog, tabId, niceResults, $(this).attr('data-url'), resourceData[$(this).attr('data-url')]);
-            });
-
-            $reverseRadio.empty();
-            for (var predicate in reverseResults) {
-                if (!reverseResults.hasOwnProperty(predicate)) {
-                    continue;
-                }
-                var $rUl = $('<ul data-title="' + getLabelLD({}, predicate) + '"></ul>');
-                var lis = [];
-                $reverseRadio.append($rUl);
-                for (i = 0; i < reverseResults[predicate].length; i++) {
-                    var $rLi = $('<li data-url="' + reverseResults[predicate][i] + '">' + getLabelLD({}, reverseResults[predicate][i]) + '</li>');
-                    lis.push($rLi);
-                }
-                lis.sort(function (a, b) {
-                    return a.text().toLowerCase() > b.text().toLowerCase();
-                });
+            else {
                 for (i = 0; i < lis.length; i++) {
-                    $rUl.append(lis[i]);
+                    $gUl.append(lis[i]);
                 }
-                $rUl.find('li').on('click', function () {
-                    updateView(dialog, tabId, niceResults, $(this).attr('data-url'), $(this).attr('data-url'));
+                $gUl.find('li').on('click', function () {
+                    updateView(dialog, tabId, niceResults, $(this).attr('data-url'), resourceData[$(this).attr('data-url')]);
                 });
+
+                $reverseRadio.empty();
+                for (var predicate in reverseResults) {
+                    if (!reverseResults.hasOwnProperty(predicate)) {
+                        continue;
+                    }
+                    var $rUl = $('<ul data-title="' + getLabelLD({}, predicate) + '"></ul>');
+                    var lis = [];
+                    $reverseRadio.append($rUl);
+                    for (i = 0; i < reverseResults[predicate].length; i++) {
+                        var $rLi = $('<li data-url="' + reverseResults[predicate][i] + '">' + getLabelLD({}, reverseResults[predicate][i]) + '</li>');
+                        lis.push($rLi);
+                    }
+                    lis.sort(function (a, b) {
+                        return a.text().toLowerCase() > b.text().toLowerCase();
+                    });
+                    if (lis.length === 0) {
+                        $rUl.append('<li>No results found</li>');
+                    }
+                    else {
+                        for (i = 0; i < lis.length; i++) {
+                            $rUl.append(lis[i]);
+                        }
+                        $rUl.find('li').on('click', function () {
+                            updateView(dialog, tabId, niceResults, $(this).attr('data-url'), $(this).attr('data-url'));
+                        });
+                    }
+                }
             }
 
             dialog.getContentElement(tabId, 'general-info').getElement().show();
